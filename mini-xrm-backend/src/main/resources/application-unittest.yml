@@ -1,0 +1,8 @@
+spring:
+  application:
+    name: miniXrm
+  config:
+    import: 'optional:classpath:application-resilience4j-unittest.yml'
+
+server:
+  port: 8080

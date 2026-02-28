@@ -1,0 +1,616 @@
+openapi: 3.0.1
+info:
+    title: Mini xRM API
+    version: "0.0.1"
+paths:
+    /v1/partners:
+        get:
+            tags:
+                - Partner
+            operationId: searchPartners
+            parameters:
+                - $ref: '#/components/parameters/partnerTagId'
+                - $ref: '#/components/parameters/page'
+                - $ref: '#/components/parameters/pageSize'
+            summary: Retrieve a list of partners
+            responses:
+                '200':
+                    description: Successful response
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/PartnerPageView'
+                '400':
+                    $ref: '#/components/responses/BadRequest'
+                '500':
+                    $ref: '#/components/responses/InternalServerError'
+        post:
+            tags:
+                - Partner
+            operationId: createPartner
+            summary: Create a new partner
+            requestBody:
+                required: true
+                content:
+                    application/json:
+                        schema:
+                            $ref: '#/components/schemas/CreateOrUpdatePartnerRequestView'
+            responses:
+                '204':
+                    $ref: '#/components/responses/NoContent'
+                '400':
+                    $ref: '#/components/responses/BadRequest'
+                '409':
+                    $ref: '#/components/responses/Conflict'
+                '422':
+                    $ref: '#/components/responses/UnprocessableEntity'
+                '500':
+                    $ref: '#/components/responses/InternalServerError'
+
+    /v1/partners/{partnerId}:
+        get:
+            tags:
+                - Partner
+            operationId: loadPartner
+            summary: Retrieve a partner by ID
+            parameters:
+                - $ref: '#/components/parameters/partnerId'
+            responses:
+                '200':
+                    description: Successful response
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/PartnerView'
+                '400':
+                    $ref: '#/components/responses/BadRequest'
+                '404':
+                    $ref: '#/components/responses/NotFound'
+                '500':
+                    $ref: '#/components/responses/InternalServerError'
+        put:
+            tags:
+                - Partner
+            operationId: updatePartner
+            parameters:
+                - $ref: '#/components/parameters/partnerId'
+            summary: Update an existing partner
+            requestBody:
+                required: true
+                content:
+                    application/json:
+                        schema:
+                            $ref: '#/components/schemas/CreateOrUpdatePartnerRequestView'
+            responses:
+                '204':
+                    $ref: '#/components/responses/NoContent'
+                '400':
+                    $ref: '#/components/responses/BadRequest'
+                '404':
+                    $ref: '#/components/responses/NotFound'
+                '409':
+                    $ref: '#/components/responses/Conflict'
+                '422':
+                    $ref: '#/components/responses/UnprocessableEntity'
+                '500':
+                    $ref: '#/components/responses/InternalServerError'
+        delete:
+            tags:
+                - Partner
+            operationId: deletePartner
+            summary: Delete a partner by ID
+            parameters:
+                - $ref: '#/components/parameters/partnerId'
+            responses:
+                '204':
+                    $ref: '#/components/responses/NoContent'
+                '400':
+                    $ref: '#/components/responses/BadRequest'
+                '404':
+                    $ref: '#/components/responses/NotFound'
+                '409':
+                    $ref: '#/components/responses/Conflict'
+                '422':
+                    $ref: '#/components/responses/UnprocessableEntity'
+                '500':
+                    $ref: '#/components/responses/InternalServerError'
+
+    /v1/partner-tags:
+        get:
+            tags:
+                - Partner Tag
+            operationId: listPartnerTags
+            summary: Retrieve a list of partner tags
+            responses:
+                '200':
+                    description: Successful response
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/PartnerTagsView'
+                '400':
+                    $ref: '#/components/responses/BadRequest'
+                '404':
+                    $ref: '#/components/responses/NotFound'
+                '500':
+                    $ref: '#/components/responses/InternalServerError'
+
+    /v1/activities:
+        post:
+            tags:
+                - Activity
+            operationId: createActivity
+            summary: Create a new activity
+            requestBody:
+                required: true
+                content:
+                    application/json:
+                        schema:
+                            $ref: '#/components/schemas/CreateOrUpdateActivityRequestView'
+            responses:
+                '204':
+                    $ref: '#/components/responses/NoContent'
+                '400':
+                    $ref: '#/components/responses/BadRequest'
+                '409':
+                    $ref: '#/components/responses/Conflict'
+                '422':
+                    $ref: '#/components/responses/UnprocessableEntity'
+                '500':
+                    $ref: '#/components/responses/InternalServerError'
+
+    /v1/activities/{activityId}:
+        put:
+            tags:
+                - Activity
+            operationId: updateActivity
+            parameters:
+                - $ref: '#/components/parameters/activityId'
+            summary: Update an existing activity
+            requestBody:
+                required: true
+                content:
+                    application/json:
+                        schema:
+                            $ref: '#/components/schemas/CreateOrUpdateActivityRequestView'
+            responses:
+                '204':
+                    $ref: '#/components/responses/NoContent'
+                '400':
+                    $ref: '#/components/responses/BadRequest'
+                '404':
+                    $ref: '#/components/responses/NotFound'
+                '409':
+                    $ref: '#/components/responses/Conflict'
+                '422':
+                    $ref: '#/components/responses/UnprocessableEntity'
+                '500':
+                    $ref: '#/components/responses/InternalServerError'
+        delete:
+            tags:
+                - Activity
+            operationId: deleteActivity
+            summary: Delete an activity by ID
+            parameters:
+                - $ref: '#/components/parameters/activityId'
+            responses:
+                '204':
+                    $ref: '#/components/responses/NoContent'
+                '400':
+                    $ref: '#/components/responses/BadRequest'
+                '404':
+                    $ref: '#/components/responses/NotFound'
+                '409':
+                    $ref: '#/components/responses/Conflict'
+                '422':
+                    $ref: '#/components/responses/UnprocessableEntity'
+                '500':
+                    $ref: '#/components/responses/InternalServerError'
+
+    /v1/partners/{partnerId}/activities:
+        get:
+            tags:
+                - Activity
+            operationId: listActivitiesByPartnerId
+            parameters:
+                - $ref: '#/components/parameters/partnerId'
+                - $ref: '#/components/parameters/page'
+                - $ref: '#/components/parameters/pageSize'
+            summary: Retrieve a list of activities by partner ID
+            responses:
+                '200':
+                    description: Successful response
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/ActivityPageView'
+                '400':
+                    $ref: '#/components/responses/BadRequest'
+                '404':
+                    $ref: '#/components/responses/NotFound'
+                '500':
+                    $ref: '#/components/responses/InternalServerError'
+                    
+    /v1/reports/person-responsible:
+        get:
+            tags:
+                - Report
+            operationId: reportPersonResponsible
+            parameters:
+                - $ref: '#/components/parameters/page'
+                - $ref: '#/components/parameters/pageSize'
+            summary: Retrieve a report of people responsible for activities
+            responses:
+                '200':
+                    description: Successful response
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/PersonResponsibleReportPageView'
+                '400':
+                    $ref: '#/components/responses/BadRequest'
+                '500':
+                    $ref: '#/components/responses/InternalServerError'
+        
+components:
+    parameters:
+        partnerId:
+            name: partnerId
+            in: path
+            required: true
+            schema:
+                type: integer
+                format: int64
+                minimum: 1
+                maximum: 9223372036854775807
+            description: The ID of the partner
+        activityId:
+            name: activityId
+            in: path
+            required: true
+            schema:
+                type: integer
+                format: int64
+                minimum: 1
+                maximum: 9223372036854775807
+            description: The ID of the activity
+        partnerTagId:
+            name: partnerTagId
+            in: query
+            required: false
+            schema:
+               type: integer
+               format: int64
+               minimum: 1
+               maximum: 9223372036854775807
+            description: The ID of the partner tag to filter by
+        page:
+            name: page
+            in: query
+            required: true
+            schema:
+                type: integer
+                format: int32
+                minimum: 0
+                example: 0
+            description: The page number to retrieve (0-based)
+        pageSize:
+            name: pageSize
+            in: query
+            required: true
+            schema:
+                type: integer
+                format: int32
+                minimum: 1
+                example: 20
+            description: The number of items per page
+
+    responses:
+        BadRequest:
+            description: Bad Request, e.g. validation failed for the request body or parameters
+            content:
+                application/json:
+                    schema:
+                        $ref: '#/components/schemas/ErrorResponseView'
+        Conflict:
+            description: Conflict, e.g. trying to create an entity with a unique field value that already exists, or concurrent modification detected
+            content:
+                application/json:
+                    schema:
+                        $ref: '#/components/schemas/ErrorResponseView'
+        UnprocessableEntity:
+            description: Unprocessable Entity, e.g. an entity referenced by an ID in the request body is missing
+            content:
+                application/json:
+                    schema:
+                        $ref: '#/components/schemas/ErrorResponseView'
+        NotFound:
+            description: Not Found, e.g. trying to retrieve, update or delete an entity by an ID in the path does not exist
+            content:
+                application/json:
+                    schema:
+                        $ref: '#/components/schemas/ErrorResponseView'
+        InternalServerError:
+            description: Internal Server Error
+            content:
+                application/json:
+                    schema:
+                        $ref: '#/components/schemas/ErrorResponseView'
+        NoContent:
+            description: No Content
+
+    schemas:
+        PartnerPageView:
+            allOf:
+                - $ref: '#/components/schemas/PageView'
+                - type: object
+                  properties:
+                      content:
+                          type: array
+                          items:
+                              $ref: '#/components/schemas/PartnerView'
+                  required:
+                      - content
+
+        PartnerView:
+            type: object
+            properties:
+                id:
+                    $ref: '#/components/schemas/id'
+                name:
+                    type: string
+                    minLength: 0
+                    maxLength: 150
+                    example: "Awesome Partner"
+                taxNumber:
+                    type: string
+                    minLength: 0
+                    maxLength: 20
+                    example: "123456789"
+                headquarters:
+                    type: string
+                    minLength: 0
+                    maxLength: 150
+                status:
+                    $ref: '#/components/schemas/PartnerStatusView'
+                tags:
+                    type: array
+                    items:
+                        $ref: '#/components/schemas/PartnerTagView'
+            required:
+                - id
+                - name
+                - tax_number
+                - headquarters
+                - status
+                - tags
+                
+        PartnerStatusView:
+            type: string
+            enum: [ACTIVE, INACTIVE]
+        
+        CreateOrUpdatePartnerRequestView:
+            type: object
+            properties:
+                name:
+                    type: string
+                    minLength: 0
+                    maxLength: 150
+                    example: "Awesome Partner"
+                tax_number:
+                    type: string
+                    minLength: 0
+                    maxLength: 20
+                    example: "123456789"
+                headquarters:
+                    type: string
+                    minLength: 0
+                    maxLength: 150
+                status:
+                    $ref: '#/components/schemas/PartnerStatusView'
+                tagIds:
+                    type: array
+                    items:
+                        $ref: '#/components/schemas/id'
+            required:
+                - name
+                - tax_number
+                - status
+                - tagIds
+        
+        PartnerTagsView:
+            type: object
+            properties:
+                content:
+                    type: array
+                    items:
+                        $ref: '#/components/schemas/PartnerTagView'
+            required:
+                - content
+                      
+        PartnerTagView:
+            type: object
+            properties:
+                id:
+                    $ref: '#/components/schemas/id'
+                name:
+                    type: string
+                    minLength: 1
+                    maxLength: 50
+                    example: "Awesome Tag"
+            required:
+                - id
+                - name
+                    
+        PageView:
+            type: object
+            properties:
+                totalElements:
+                    type: integer
+                    format: int64
+                    minimum: 0
+                    example: 100
+                totalPages:
+                    type: integer
+                    format: int32
+                    minimum: 0
+                    example: 5
+                currentPage:
+                    type: integer
+                    format: int32
+                    minimum: 0
+                    example: 0
+                    description: The current page number (0-based)
+                pageSize:
+                    type: integer
+                    format: int32
+                    minimum: 1
+                    example: 20
+            required:
+                - totalElements
+                - totalPages
+                - currentPage
+                - pageSize
+                    
+        ActivityPageView:
+            allOf:
+                - $ref: '#/components/schemas/PageView'
+                - type: object
+                  properties:
+                      content:
+                          type: array
+                          items:
+                              $ref: '#/components/schemas/ActivityView'
+                  required:
+                      - content
+                
+        ActivityView:
+            type: object
+            properties:
+                id:
+                    $ref: '#/components/schemas/id'
+                subject:
+                    type: string
+                    minLength: 1
+                    maxLength: 150
+                    example: "Meeting with Awesome Partner"
+                type:
+                    type: string
+                description:
+                    type: string
+                    minLength: 1
+                    maxLength: 500000
+                    example: "Discussing potential collaboration opportunities."
+                durationMinutes:
+                    type: integer
+                    minimum: 1
+                    example: 60
+                personResponsible:
+                    type: string
+                    minLength: 3
+                    maxLength: 150
+                    example: "Jane Smith"
+                partnerId:
+                    $ref: '#/components/schemas/id'
+            required:
+                - id
+                - subject
+                - type
+                - description
+                - durationMinutes
+                - personResponsible
+                - partnerId
+
+        CreateOrUpdateActivityRequestView:
+            type: object
+            properties:
+                subject:
+                    type: string
+                    minLength: 1
+                    maxLength: 150
+                    example: "Meeting with Awesome Partner"
+                type:
+                    type: string
+                    minLength: 1
+                    maxLength: 50
+                description:
+                    type: string
+                    minLength: 1
+                    maxLength: 100000
+                    example: "Discussing potential collaboration opportunities."
+                durationMinutes:
+                    type: integer
+                    minimum: 1
+                    example: 60
+                personResponsible:
+                    type: string
+                    minLength: 3
+                    maxLength: 150
+                    example: "Jane Smith"
+                partnerId:
+                    $ref: '#/components/schemas/id'
+            required:
+                - subject
+                - type
+                - description
+                - durationMinutes
+                - personResponsible
+                - partnerId
+        
+        PersonResponsibleReportPageView:
+            allOf:
+                - $ref: '#/components/schemas/PageView'
+                - type : object
+                  properties:
+                      content:
+                          type: array
+                          items:
+                              $ref: '#/components/schemas/PersonResponsibleReportItemView'
+            required:
+                - content
+                
+        PersonResponsibleReportItemView:
+            type: object
+            properties:
+                personResponsible:
+                    type: string
+                    minLength: 0
+                    maxLength: 150
+                    example: "Jane Smith"
+                totalDurationMinutes:
+                    type: integer
+                    format: int32
+                    minimum: 0
+                    example: 240
+                partnerCount:
+                    type: integer
+                    format: int32
+                    minimum: 0
+                    example: 5
+            required:
+                - personResponsible
+                - totalDurationMinutes
+                - partnerCount
+                
+        ErrorResponseView:
+            type: object
+            properties:
+                code:
+                    type: string
+                    example: VALIDATION_FAILED
+                message:
+                    type: string
+                details:
+                    type: string
+            required:
+                - code
+                - message
+                - details
+
+        id:
+            type: integer
+            format: int64
+            minimum: 1
+            maximum: 9223372036854775807
+            example: 123456789
+            

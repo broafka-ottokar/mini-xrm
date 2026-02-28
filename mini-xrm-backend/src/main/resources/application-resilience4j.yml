@@ -1,0 +1,9 @@
+resilience4j:
+  retry:
+    instances:
+      optimisticLockingRetry:
+        max-attempts: 3
+        wait-duration: 0ms
+        exponential-backoff-multiplier: 2
+        retry-exceptions:
+          - org.springframework.dao.OptimisticLockingFailureException

@@ -1,0 +1,118 @@
+plugins {
+	id 'java'
+	id 'org.springframework.boot' version '3.1.4'
+	id 'io.spring.dependency-management' version '1.1.0'
+	id 'org.openapi.generator' version "7.19.0"
+}
+
+group 'com.example.minixrm'
+version '1.0-SNAPSHOT'
+
+sourceCompatibility = '21'
+
+repositories {
+	mavenCentral()
+}
+
+apply plugin: "eclipse"
+
+sourceSets {
+	named("main") {
+		java.srcDir("src/gen/java")
+	}
+}
+
+ext {
+	guavaVersion = '32.1.2-jre'
+	liquibaseVersion = '4.23.2'
+	postgresqlVersion = '42.7.7'
+	testcontainersVersion = '2.0.3'
+	jacksonNullableVersion = '0.2.3'
+	resilience4jVersion = '2.0.2'
+	archUnitVersion = '1.4.1'
+	springdocVersion = '2.1.0'
+}
+
+dependencies {
+	implementation 'org.springframework.boot:spring-boot-starter'
+	implementation 'org.springframework.boot:spring-boot-starter-web'
+	implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
+	implementation 'org.springframework.boot:spring-boot-starter-validation'
+	implementation 'org.springframework.boot:spring-boot-starter-aop'
+	implementation("org.springdoc:springdoc-openapi-starter-webmvc-ui:${springdocVersion}")
+	
+	implementation "org.liquibase:liquibase-core:${liquibaseVersion}"
+	
+	runtimeOnly "org.postgresql:postgresql:${postgresqlVersion}"
+
+	implementation("org.openapitools:jackson-databind-nullable:${jacksonNullableVersion}")
+	implementation "io.github.resilience4j:resilience4j-spring-boot3:${resilience4jVersion}"
+	implementation "io.github.resilience4j:resilience4j-retry:${resilience4jVersion}"
+	implementation "io.github.resilience4j:resilience4j-core:${resilience4jVersion}"
+
+	testImplementation "com.tngtech.archunit:archunit:${archUnitVersion}"
+	testImplementation "com.tngtech.archunit:archunit-junit5:${archUnitVersion}"
+
+	testImplementation 'org.springframework.boot:spring-boot-starter-test'
+	testRuntimeOnly	"org.junit.platform:junit-platform-launcher"
+}
+
+dependencyManagement {
+	imports {
+		mavenBom "org.testcontainers:testcontainers-bom:${testcontainersVersion}"
+	}
+}
+
+test {
+	useJUnitPlatform()
+}
+
+tasks.register('openApiGenerateFromSpec', org.openapitools.generator.gradle.plugin.tasks.GenerateTask) {
+    generatorName.set('spring')
+    inputSpec.set("${projectDir}/src/main/resources/static/openapi-v1.yaml")
+    outputDir.set("${project.buildDir}/generated/openapi")
+    apiPackage.set("com.example.minixrm.backend.web.openapi.v1.api")
+    modelPackage.set("com.example.minixrm.backend.web.openapi.v1.model")
+    invokerPackage.set("com.example.minixrm.backend.web.openapi.v1")
+    configOptions.set([
+        library: "spring-boot",
+        dateLibrary: "java8",
+        interfaceOnly: "true",
+        useTags: "true",
+        hideGenerationTimestamp: "true",
+        serializableModel: "true",
+        useSpringController: "true",
+        annotationLibrary: "none",
+        documentationProvider: "none",
+        generateSupportingFiles: "false",
+        skipDefaultInterface: "true",
+        typeMappings: "Double=java.math.BigDecimal",
+        useJakartaEe: "true",
+        useJacksonNullable: "false",
+        useOptional: "false"
+    ])
+    additionalProperties.set([
+        apiDocs: "false",
+        modelDocs: "false"
+    ])
+    dependsOn("_cleanOpenApiGenerated")
+    finalizedBy("_moveOpenApiGenerated")
+}
+
+def openApiOutputDir = layout.buildDirectory.dir('generated/openapi')
+
+tasks.register('_moveOpenApiGenerated', Copy) {
+    dependsOn 'openApiGenerateFromSpec'
+    from(openApiOutputDir.map { dir -> file("${dir.asFile}/src/main/java") })
+    into file('src/gen/java')
+    include '**/*.java'
+    exclude '**/ApiUtil.java'
+    exclude 'org/**'
+    doLast {
+        delete openApiOutputDir.get().asFile
+    }
+}
+
+tasks.register('_cleanOpenApiGenerated', Delete) {
+    delete file('src/gen/java/com/example/minixrm/backend/web/openapi/v1')
+}
