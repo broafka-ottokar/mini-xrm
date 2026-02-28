@@ -31,6 +31,7 @@ public class PartnerViewMapper {
 				dto.getId(),
 				dto.getName(),
 				dto.getTaxNumber(),
+				dto.getHeadquarters(),
 				partnerStatusViewMapper.toView(dto.getStatus()),
 				partnerTagViewMapper.toViewList(dto.getPartnerTags())
 		);

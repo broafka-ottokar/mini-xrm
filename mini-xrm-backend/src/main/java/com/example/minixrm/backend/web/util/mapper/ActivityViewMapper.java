@@ -26,7 +26,8 @@ public class ActivityViewMapper {
 				.type(dto.getType())
 				.description(dto.getDescription())
 				.durationMinutes((int) dto.getDurationMinutes())
-				.personResponsible(dto.getPersonResponsible());
+				.personResponsible(dto.getPersonResponsible())
+				.partnerId(dto.getPartner().getId());
 	}
 
 	public ActivityPageView toView(ActivityPageDto dto) {

@@ -4,6 +4,7 @@ import org.springframework.stereotype.Component;
 
 import com.example.minixrm.backend.core.facade.ActivityDtoFacade;
 import com.example.minixrm.backend.web.openapi.v1.model.ActivityPageView;
+import com.example.minixrm.backend.web.openapi.v1.model.ActivityView;
 import com.example.minixrm.backend.web.openapi.v1.model.CreateOrUpdateActivityRequestView;
 import com.example.minixrm.backend.web.util.mapper.ActivityViewMapper;
 
@@ -21,6 +22,10 @@ public class ActivityViewFacade {
 		this.mapper = mapper;
 	}
 
+	public ActivityView getActivityById(Long activityId) {
+		return mapper.toView(delegate.getActivityById(activityId));
+	}
+	
 	public void deleteActivity(Long activityId) {
 		delegate.deleteActivity(activityId);
 	}

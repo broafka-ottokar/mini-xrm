@@ -37,7 +37,7 @@ public class ActivityService {
 	
 	public Page<Activity> findActivitiesByPartner(long partnerId, int page, int size) {
 		Pageable pageable = PageRequest.of(page, size);
-		Page<Activity> all = activityRepository.findAll(pageable);
+		Page<Activity> all = activityRepository.findByPartnerId(partnerId, pageable);
 		return all;
 	}
 	

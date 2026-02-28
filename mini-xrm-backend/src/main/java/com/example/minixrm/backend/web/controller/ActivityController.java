@@ -10,6 +10,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import com.example.minixrm.backend.web.facade.ActivityViewFacade;
 import com.example.minixrm.backend.web.openapi.v1.api.ActivityApi;
 import com.example.minixrm.backend.web.openapi.v1.model.ActivityPageView;
+import com.example.minixrm.backend.web.openapi.v1.model.ActivityView;
 import com.example.minixrm.backend.web.openapi.v1.model.CreateOrUpdateActivityRequestView;
 
 import jakarta.validation.Valid;
@@ -30,9 +31,9 @@ public class ActivityController implements ActivityApi {
 
 	@Override
 	@RequestMapping(
-		method = RequestMethod.DELETE,
-		value = ActivityApi.PATH_DELETE_ACTIVITY,
-		produces = { "application/json" }
+			method = RequestMethod.DELETE,
+			value = ActivityApi.PATH_DELETE_ACTIVITY,
+			produces = { "application/json" }
 	)
 	public ResponseEntity<Void> deleteActivity(@NotNull @Min(1) @Max(9223372036854775807L) Long activityId) {
 		facade.deleteActivity(activityId);
@@ -41,10 +42,10 @@ public class ActivityController implements ActivityApi {
 
 	@Override
 	@RequestMapping(
-		method = RequestMethod.POST,
-		value = ActivityApi.PATH_CREATE_ACTIVITY,
-		produces = { "application/json" },
-		consumes = { "application/json" }
+			method = RequestMethod.POST,
+			value = ActivityApi.PATH_CREATE_ACTIVITY,
+			produces = { "application/json" },
+			consumes = { "application/json" }
 	)
 	public ResponseEntity<Void> createActivity(
 			@Valid CreateOrUpdateActivityRequestView createOrUpdateActivityRequestView
@@ -54,10 +55,10 @@ public class ActivityController implements ActivityApi {
 
 	@Override
 	@RequestMapping(
-		method = RequestMethod.GET,
-		value = ActivityApi.PATH_LIST_ACTIVITIES_BY_PARTNER_ID,
-		produces = { "application/json" }
-		)
+			method = RequestMethod.GET,
+			value = ActivityApi.PATH_LIST_ACTIVITIES_BY_PARTNER_ID,
+			produces = { "application/json" }
+	)
 	public ResponseEntity<ActivityPageView> listActivitiesByPartnerId(
 		@NotNull @Min(value = 1L) @Max(value = 9223372036854775807L)  @PathVariable("partnerId") Long partnerId,
 		@NotNull @Min(value = 0)  @Valid @RequestParam(value = "page", required = true) Integer page,
@@ -69,10 +70,10 @@ public class ActivityController implements ActivityApi {
 
 	@Override
 	@RequestMapping(
-		method = RequestMethod.PUT,
-		value = ActivityApi.PATH_UPDATE_ACTIVITY,
-		produces = { "application/json" },
-		consumes = { "application/json" }
+			method = RequestMethod.PUT,
+			value = ActivityApi.PATH_UPDATE_ACTIVITY,
+			produces = { "application/json" },
+			consumes = { "application/json" }
 	)
 	public ResponseEntity<Void> updateActivity(
 			@NotNull @Min(1) @Max(9223372036854775807L) Long activityId,
@@ -80,6 +81,16 @@ public class ActivityController implements ActivityApi {
 	) {
 		facade.createOrUpdateActivity(activityId, createOrUpdateActivityRequestView);
 		return ResponseEntity.noContent().build();
+	}
+
+	@Override
+    @RequestMapping(
+	        method = RequestMethod.GET,
+	        value = ActivityApi.PATH_LOAD_ACTIVITY,
+	        produces = { "application/json" }
+    )
+	public ResponseEntity<ActivityView> loadActivity(@NotNull @Min(1) @Max(9223372036854775807L) Long activityId) {
+		return ResponseEntity.ok(facade.getActivityById(activityId));
 	}
 
 }

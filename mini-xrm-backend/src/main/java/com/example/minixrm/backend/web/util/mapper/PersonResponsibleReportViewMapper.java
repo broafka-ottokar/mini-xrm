@@ -29,8 +29,8 @@ public class PersonResponsibleReportViewMapper {
 		}
 		return new PersonResponsibleReportItemView(
 				personresponsiblereportitemdto1.getPersonResponsible(),
-				personresponsiblereportitemdto1.getPartnerCount(),
-				personresponsiblereportitemdto1.getTotalDurationMinutes()
+				personresponsiblereportitemdto1.getTotalDurationMinutes(),
+				personresponsiblereportitemdto1.getPartnerCount()
 		);
 	}
 

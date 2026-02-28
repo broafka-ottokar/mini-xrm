@@ -19,7 +19,7 @@ import jakarta.validation.constraints.Size;
 
 @Entity
 @Table(name = "activity")
-@SQLDelete(sql = "UPDATE activity SET deleted = true WHERE id = ?")
+@SQLDelete(sql = "UPDATE activity SET deleted = true WHERE id = ? AND version = ?")
 @Where(clause = "deleted = false")
 public class Activity {
 	

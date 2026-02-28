@@ -5,6 +5,7 @@ import org.springframework.stereotype.Component;
 
 import com.example.minixrm.backend.core.domain.entity.Activity;
 import com.example.minixrm.backend.core.domain.entity.Partner;
+import com.example.minixrm.backend.core.facade.dto.ActivityDto;
 import com.example.minixrm.backend.core.facade.dto.ActivityPageDto;
 import com.example.minixrm.backend.core.facade.dto.CreateOrUpdateActivityDto;
 import com.example.minixrm.backend.core.facade.util.ApplicationException;
@@ -37,6 +38,12 @@ public class ActivityDtoFacade {
 		this.partnerRepository = partnerRepository;
 	}
 
+	public ActivityDto getActivityById(Long id) {
+		Activity entity = activityService.getActivityById(id)
+				.orElseThrow(() -> ApplicationException.entityNotFound(id));
+		return activityDtoMapper.toDto(entity);
+	}
+	
 	@Transactional
 	@Retry(name = "optimisticLockingRetry", fallbackMethod = "handleOptimisticLockingFailure")
 	public void createOrUpdateActivity(Long activityId, @Valid CreateOrUpdateActivityDto dto) {

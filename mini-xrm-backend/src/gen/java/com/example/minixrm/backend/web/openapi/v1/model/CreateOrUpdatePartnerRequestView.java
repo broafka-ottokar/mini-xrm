@@ -1,15 +1,23 @@
 package com.example.minixrm.backend.web.openapi.v1.model;
 
+import java.net.URI;
 import java.util.Objects;
+import com.example.minixrm.backend.web.openapi.v1.model.PartnerStatusView;
 import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.annotation.JsonCreator;
+import com.fasterxml.jackson.annotation.JsonValue;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import org.springframework.lang.Nullable;
+import org.openapitools.jackson.nullable.JsonNullable;
 import java.io.Serializable;
+import java.time.OffsetDateTime;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.*;
 
 
+import java.util.*;
 import jakarta.annotation.Generated;
 
 /**
@@ -75,7 +83,7 @@ public class CreateOrUpdatePartnerRequestView implements Serializable {
    * @return taxNumber
    */
   @NotNull @Size(min = 0, max = 20) 
-  @JsonProperty("tax_number")
+  @JsonProperty("taxNumber")
   public String getTaxNumber() {
     return taxNumber;
   }

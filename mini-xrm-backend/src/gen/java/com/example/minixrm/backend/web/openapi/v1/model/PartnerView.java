@@ -1,15 +1,24 @@
 package com.example.minixrm.backend.web.openapi.v1.model;
 
+import java.net.URI;
 import java.util.Objects;
+import com.example.minixrm.backend.web.openapi.v1.model.PartnerStatusView;
+import com.example.minixrm.backend.web.openapi.v1.model.PartnerTagView;
 import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.annotation.JsonCreator;
+import com.fasterxml.jackson.annotation.JsonValue;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import org.springframework.lang.Nullable;
+import org.openapitools.jackson.nullable.JsonNullable;
 import java.io.Serializable;
+import java.time.OffsetDateTime;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.*;
 
 
+import java.util.*;
 import jakarta.annotation.Generated;
 
 /**
@@ -25,7 +34,7 @@ public class PartnerView implements Serializable {
 
   private String name;
 
-  private @Nullable String taxNumber;
+  private String taxNumber;
 
   private String headquarters;
 
@@ -41,9 +50,10 @@ public class PartnerView implements Serializable {
   /**
    * Constructor with only required parameters
    */
-  public PartnerView(Long id, String name, String headquarters, PartnerStatusView status, List<@Valid PartnerTagView> tags) {
+  public PartnerView(Long id, String name, String taxNumber, String headquarters, PartnerStatusView status, List<@Valid PartnerTagView> tags) {
     this.id = id;
     this.name = name;
+    this.taxNumber = taxNumber;
     this.headquarters = headquarters;
     this.status = status;
     this.tags = tags;
@@ -89,7 +99,7 @@ public class PartnerView implements Serializable {
     this.name = name;
   }
 
-  public PartnerView taxNumber(@Nullable String taxNumber) {
+  public PartnerView taxNumber(String taxNumber) {
     this.taxNumber = taxNumber;
     return this;
   }
@@ -98,13 +108,13 @@ public class PartnerView implements Serializable {
    * Get taxNumber
    * @return taxNumber
    */
-  @Size(min = 0, max = 20) 
+  @NotNull @Size(min = 0, max = 20) 
   @JsonProperty("taxNumber")
-  public @Nullable String getTaxNumber() {
+  public String getTaxNumber() {
     return taxNumber;
   }
 
-  public void setTaxNumber(@Nullable String taxNumber) {
+  public void setTaxNumber(String taxNumber) {
     this.taxNumber = taxNumber;
   }
 

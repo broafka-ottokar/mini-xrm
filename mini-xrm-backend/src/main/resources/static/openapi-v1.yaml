@@ -160,6 +160,26 @@ paths:
                     $ref: '#/components/responses/InternalServerError'
 
     /v1/activities/{activityId}:
+        get:
+            tags:
+                - Activity
+            operationId: loadActivity
+            summary: Retrieve an activity by ID
+            parameters:
+                - $ref: '#/components/parameters/activityId'
+            responses:
+                '200':
+                    description: Successful response
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/ActivityView'
+                '400':
+                    $ref: '#/components/responses/BadRequest'
+                '404':
+                    $ref: '#/components/responses/NotFound'
+                '500':
+                    $ref: '#/components/responses/InternalServerError'
         put:
             tags:
                 - Activity
@@ -380,7 +400,7 @@ components:
             required:
                 - id
                 - name
-                - tax_number
+                - taxNumber
                 - headquarters
                 - status
                 - tags
@@ -397,7 +417,7 @@ components:
                     minLength: 0
                     maxLength: 150
                     example: "Awesome Partner"
-                tax_number:
+                taxNumber:
                     type: string
                     minLength: 0
                     maxLength: 20
@@ -414,7 +434,7 @@ components:
                         $ref: '#/components/schemas/id'
             required:
                 - name
-                - tax_number
+                - taxNumber
                 - status
                 - tagIds
         
@@ -526,12 +546,12 @@ components:
             properties:
                 subject:
                     type: string
-                    minLength: 1
+                    minLength: 0
                     maxLength: 150
                     example: "Meeting with Awesome Partner"
                 type:
                     type: string
-                    minLength: 1
+                    minLength: 0
                     maxLength: 50
                 description:
                     type: string
@@ -544,7 +564,7 @@ components:
                     example: 60
                 personResponsible:
                     type: string
-                    minLength: 3
+                    minLength: 1
                     maxLength: 150
                     example: "Jane Smith"
                 partnerId:

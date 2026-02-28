@@ -1,12 +1,18 @@
 package com.example.minixrm.backend.web.openapi.v1.model;
 
+import java.net.URI;
 import java.util.Objects;
 import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.annotation.JsonCreator;
 import org.springframework.lang.Nullable;
+import org.openapitools.jackson.nullable.JsonNullable;
 import java.io.Serializable;
+import java.time.OffsetDateTime;
+import jakarta.validation.Valid;
 import jakarta.validation.constraints.*;
 
 
+import java.util.*;
 import jakarta.annotation.Generated;
 
 /**
@@ -55,7 +61,7 @@ public class CreateOrUpdateActivityRequestView implements Serializable {
    * Get subject
    * @return subject
    */
-  @NotNull @Size(min = 1, max = 150) 
+  @NotNull @Size(min = 0, max = 150) 
   @JsonProperty("subject")
   public String getSubject() {
     return subject;
@@ -74,7 +80,7 @@ public class CreateOrUpdateActivityRequestView implements Serializable {
    * Get type
    * @return type
    */
-  @NotNull @Size(min = 1, max = 50) 
+  @NotNull @Size(min = 0, max = 50) 
   @JsonProperty("type")
   public String getType() {
     return type;
@@ -132,7 +138,7 @@ public class CreateOrUpdateActivityRequestView implements Serializable {
    * Get personResponsible
    * @return personResponsible
    */
-  @NotNull @Size(min = 3, max = 150) 
+  @NotNull @Size(min = 1, max = 150) 
   @JsonProperty("personResponsible")
   public String getPersonResponsible() {
     return personResponsible;

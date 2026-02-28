@@ -1,0 +1,39 @@
+<form [formGroup]="form" (ngSubmit)="save()" class="partner-form-container">
+	<mat-progress-spinner *ngIf="loading" mode="indeterminate"></mat-progress-spinner>
+
+	<mat-form-field appearance="fill">
+		<mat-label>Name</mat-label>
+		<input matInput formControlName="name" />
+	</mat-form-field>
+
+	<mat-form-field appearance="fill">
+		<mat-label>Tax number</mat-label>
+		<input matInput formControlName="taxNumber" />
+	</mat-form-field>
+
+	<mat-form-field appearance="fill">
+		<mat-label>Headquarters</mat-label>
+		<input matInput formControlName="headquarters" />
+	</mat-form-field>
+
+	<mat-form-field appearance="fill">
+		<mat-label>Status</mat-label>
+		<mat-select formControlName="status">
+			<mat-option value="ACTIVE">Active</mat-option>
+			<mat-option value="INACTIVE">Inactive</mat-option>
+		</mat-select>
+	</mat-form-field>
+
+	<mat-form-field appearance="fill">
+		<mat-label>Tags</mat-label>
+		<mat-select formControlName="tagIds" multiple>
+			<mat-option *ngFor="let tag of tags" [value]="tag.id">{{ tag.name }}</mat-option>
+		</mat-select>
+	</mat-form-field>
+
+	<div style="margin-top: 16px">
+		<button mat-raised-button color="primary" type="submit">Save</button>
+		<button mat-button type="button" (click)="cancel()">Cancel</button>
+	</div>
+
+</form>

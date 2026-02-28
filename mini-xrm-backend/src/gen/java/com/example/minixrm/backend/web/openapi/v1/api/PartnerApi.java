@@ -6,6 +6,7 @@
 package com.example.minixrm.backend.web.openapi.v1.api;
 
 import com.example.minixrm.backend.web.openapi.v1.model.CreateOrUpdatePartnerRequestView;
+import com.example.minixrm.backend.web.openapi.v1.model.ErrorResponseView;
 import org.springframework.lang.Nullable;
 import com.example.minixrm.backend.web.openapi.v1.model.PartnerPageView;
 import com.example.minixrm.backend.web.openapi.v1.model.PartnerView;
@@ -13,8 +14,13 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
+
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.*;
+import java.util.List;
+import java.util.Map;
+import java.util.Optional;
 import jakarta.annotation.Generated;
 
 @Generated(value = "org.openapitools.codegen.languages.SpringCodegen", comments = "Generator version: 7.19.0")

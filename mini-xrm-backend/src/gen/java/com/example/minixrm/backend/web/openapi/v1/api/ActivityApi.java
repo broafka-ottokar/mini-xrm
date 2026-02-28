@@ -6,13 +6,20 @@
 package com.example.minixrm.backend.web.openapi.v1.api;
 
 import com.example.minixrm.backend.web.openapi.v1.model.ActivityPageView;
+import com.example.minixrm.backend.web.openapi.v1.model.ActivityView;
 import com.example.minixrm.backend.web.openapi.v1.model.CreateOrUpdateActivityRequestView;
+import com.example.minixrm.backend.web.openapi.v1.model.ErrorResponseView;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
+
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.*;
+import java.util.List;
+import java.util.Map;
+import java.util.Optional;
 import jakarta.annotation.Generated;
 
 @Generated(value = "org.openapitools.codegen.languages.SpringCodegen", comments = "Generator version: 7.19.0")
@@ -85,6 +92,26 @@ public interface ActivityApi {
         @NotNull @Min(value = 1L) @Max(value = 9223372036854775807L)  @PathVariable("partnerId") Long partnerId,
         @NotNull @Min(value = 0)  @Valid @RequestParam(value = "page", required = true) Integer page,
         @NotNull @Min(value = 1)  @Valid @RequestParam(value = "pageSize", required = true) Integer pageSize
+    );
+
+
+    String PATH_LOAD_ACTIVITY = "/v1/activities/{activityId}";
+    /**
+     * GET /v1/activities/{activityId} : Retrieve an activity by ID
+     *
+     * @param activityId The ID of the activity (required)
+     * @return Successful response (status code 200)
+     *         or Bad Request, e.g. validation failed for the request body or parameters (status code 400)
+     *         or Not Found, e.g. trying to retrieve, update or delete an entity by an ID in the path does not exist (status code 404)
+     *         or Internal Server Error (status code 500)
+     */
+    @RequestMapping(
+        method = RequestMethod.GET,
+        value = ActivityApi.PATH_LOAD_ACTIVITY,
+        produces = { "application/json" }
+    )
+    ResponseEntity<ActivityView> loadActivity(
+        @NotNull @Min(value = 1L) @Max(value = 9223372036854775807L)  @PathVariable("activityId") Long activityId
     );
 
 

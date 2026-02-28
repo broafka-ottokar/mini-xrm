@@ -67,7 +67,7 @@ test {
 	useJUnitPlatform()
 }
 
-tasks.register('openApiGenerateFromSpec', org.openapitools.generator.gradle.plugin.tasks.GenerateTask) {
+tasks.register('openApiGenerateBackend', org.openapitools.generator.gradle.plugin.tasks.GenerateTask) {
     generatorName.set('spring')
     inputSpec.set("${projectDir}/src/main/resources/static/openapi-v1.yaml")
     outputDir.set("${project.buildDir}/generated/openapi")
@@ -95,14 +95,14 @@ tasks.register('openApiGenerateFromSpec', org.openapitools.generator.gradle.plug
         apiDocs: "false",
         modelDocs: "false"
     ])
-    dependsOn("_cleanOpenApiGenerated")
-    finalizedBy("_moveOpenApiGenerated")
+    dependsOn("_cleanOpenApiGeneratedBackend")
+    finalizedBy("_moveOpenApiGeneratedBackend")
 }
 
 def openApiOutputDir = layout.buildDirectory.dir('generated/openapi')
 
-tasks.register('_moveOpenApiGenerated', Copy) {
-    dependsOn 'openApiGenerateFromSpec'
+tasks.register('_moveOpenApiGeneratedBackend', Copy) {
+    dependsOn 'openApiGenerateBackend'
     from(openApiOutputDir.map { dir -> file("${dir.asFile}/src/main/java") })
     into file('src/gen/java')
     include '**/*.java'
@@ -113,6 +113,40 @@ tasks.register('_moveOpenApiGenerated', Copy) {
     }
 }
 
-tasks.register('_cleanOpenApiGenerated', Delete) {
+tasks.register('_cleanOpenApiGeneratedBackend', Delete) {
     delete file('src/gen/java/com/example/minixrm/backend/web/openapi/v1')
+}
+
+def frontendDir = file("${projectDir}/../mini-xrm-frontend")
+def frontendApiGenDir = file("${frontendDir}/mini-xrm-client-angular")
+
+def openApiAngularOutputDir = layout.buildDirectory.dir('generated/openapi-angular')
+
+tasks.register('openApiGenerateAngularClient', org.openapitools.generator.gradle.plugin.tasks.GenerateTask) {
+    generatorName.set('typescript-angular')
+    inputSpec.set("${projectDir}/src/main/resources/static/openapi-v1.yaml")
+    outputDir.set("${frontendApiGenDir}")
+
+    configOptions.set([
+        ngVersion: "21",
+        providedInRoot: "true",
+        useSingleRequestParameter: "true",
+        supportsES6: "true"
+    ])
+
+    additionalProperties.set([
+        npmName: "mini-xrm-api",
+        npmVersion: "1.0.0"
+    ])
+
+    dependsOn('_cleanOpenApiGeneratedAngular')
+}
+
+tasks.register('_cleanOpenApiGeneratedAngular', Delete) {
+    delete frontendApiGenDir
+}
+
+tasks.register('openApiGenerateAll') {
+    group = 'openapi'
+    dependsOn 'openApiGenerateBackend', 'openApiGenerateAngularClient'
 }
