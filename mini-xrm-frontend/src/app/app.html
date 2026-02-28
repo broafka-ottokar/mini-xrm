@@ -1,2 +1,10 @@
-<a routerLink="partner-list">Partner List</a> | <a routerLink="report">Report</a> | <a routerLink="partner/new">New Partner</a> | <a routerLink="activity/new">New Activity</a>
-<router-outlet />
+<div class="menu">
+    <button mat-button type="button" routerLink="partner-list">Partner List</button>
+    <button mat-button type="button" routerLink="report">Report</button>
+    <button mat-button type="button" routerLink="partner/new">New Partner</button>
+    <button mat-button type="button" routerLink="activity/new">New Activity</button>
+    <a href="http://localhost:8080/swagger-ui" target="_blank">Swagger UI</a>
+</div>
+<div class="content">
+    <router-outlet />
+</div>

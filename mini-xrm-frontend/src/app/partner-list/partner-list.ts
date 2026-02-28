@@ -16,11 +16,11 @@ import { PartnerStatusView } from '../../../mini-xrm-client-angular/model/partne
 	selector: 'app-partner-list',
 	imports: [CommonModule, MatTableModule, MatPaginatorModule, MatProgressSpinnerModule, MatChipsModule, RouterLinkWithHref],
 	templateUrl: './partner-list.html',
-	styleUrl: './partner-list.scss',
+	styleUrls: ['./partner-list.scss'],
 })
 export class PartnerList implements OnInit, AfterViewInit {
 
-	protected displayedColumns = ['name', 'headquarters', 'status', 'tags'];
+	protected displayedColumns = ['name', 'headquarters', 'status', 'tags', 'actions'];
 	protected dataSource = new MatTableDataSource<PartnerView>([]);
 	protected loading = false;
 	protected totalElements = 0;
@@ -72,4 +72,16 @@ export class PartnerList implements OnInit, AfterViewInit {
 				throw new Error('Unknown status: ' + status);
 		}
 	}
+
+	protected delete(element: PartnerView) {
+		this.partnerService.deletePartner({ partnerId: element.id! }).subscribe({
+			next: () => {
+				this.loadPage(this.paginator.pageIndex, this.paginator.pageSize);
+			},
+			error: () => {
+				alert('Failed to delete partner');
+			}
+		});
+	}
+
 }

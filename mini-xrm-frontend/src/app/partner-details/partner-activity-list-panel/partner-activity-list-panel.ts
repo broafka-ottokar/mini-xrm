@@ -9,10 +9,11 @@ import { ActivityService } from '../../../../mini-xrm-client-angular/api/activit
 import { ActivityView } from '../../../../mini-xrm-client-angular/model/activityView';
 import { MatChipsModule } from '@angular/material/chips';
 import { MatProgressSpinnerModule } from "@angular/material/progress-spinner";
+import { RouterLinkWithHref } from '@angular/router';
 
 @Component({
 	selector: 'app-partner-activity-list-panel',
-	imports: [CommonModule, MatChipsModule, MatProgressSpinnerModule, MatPaginatorModule, MatTableModule],
+	imports: [CommonModule, MatChipsModule, MatProgressSpinnerModule, MatPaginatorModule, MatTableModule, RouterLinkWithHref],
 	templateUrl: './partner-activity-list-panel.html',
 	styleUrl: './partner-activity-list-panel.scss',
 })
