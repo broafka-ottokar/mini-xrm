@@ -86,8 +86,8 @@ public class PartnerService {
 	}
 	
 	@Transactional
-	public void createOrUpdate(@Valid Partner entity) {
-		partnerRepository.save(entity);
+	public Partner createOrUpdate(@Valid Partner entity) {
+		return partnerRepository.save(entity);
 	}
 
 }

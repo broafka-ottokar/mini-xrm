@@ -3,6 +3,7 @@ package com.example.minixrm.backend.web.controller;
 import org.springframework.http.ResponseEntity;
 import org.springframework.lang.Nullable;
 import org.springframework.stereotype.Controller;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -22,6 +23,7 @@ import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotNull;
 
 @Controller
+@Validated
 public class ActivityController implements ActivityApi {
 
 	private final ActivityViewFacade facade;
@@ -50,7 +52,7 @@ public class ActivityController implements ActivityApi {
 			produces = { "application/json" },
 			consumes = { "application/json" }
 	)
-	public ResponseEntity<Void> createActivity(
+	public ResponseEntity<ActivityView> createActivity(
 			@Valid CreateOrUpdateActivityRequestView createOrUpdateActivityRequestView
 	) {
 		return this.updateActivity(null, createOrUpdateActivityRequestView);
@@ -80,12 +82,12 @@ public class ActivityController implements ActivityApi {
 			produces = { "application/json" },
 			consumes = { "application/json" }
 	)
-	public ResponseEntity<Void> updateActivity(
+	public ResponseEntity<ActivityView> updateActivity(
 			@NotNull @Min(1) @Max(9223372036854775807L) Long activityId,
 			@Valid CreateOrUpdateActivityRequestView createOrUpdateActivityRequestView
 	) {
-		facade.createOrUpdateActivity(activityId, createOrUpdateActivityRequestView);
-		return ResponseEntity.noContent().build();
+		ActivityView view = facade.createOrUpdateActivity(activityId, createOrUpdateActivityRequestView);
+		return ResponseEntity.ok(view);
 	}
 
 	@Override

@@ -8,6 +8,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.retry.annotation.Backoff;
 import org.springframework.retry.annotation.Retryable;
 import org.springframework.stereotype.Component;
+import org.springframework.validation.annotation.Validated;
 
 import com.example.minixrm.backend.core.domain.PartnerVSortField;
 import com.example.minixrm.backend.core.domain.SortDirection;
@@ -32,6 +33,7 @@ import jakarta.transaction.Transactional;
 import jakarta.validation.Valid;
 
 @Component
+@Validated
 public class PartnerDtoFacade {
 	
 	private final PartnerService partnerService;
@@ -86,7 +88,7 @@ public class PartnerDtoFacade {
 
 	@Transactional
 	@Retryable(retryFor = OptimisticLockingFailureException.class, maxAttempts = 3, backoff = @Backoff(delay = 100))
-	public void createOrUpdate(@Valid CreateOrUpdatePartnerDto dto, Long id) {
+	public PartnerDto createOrUpdate(@Valid CreateOrUpdatePartnerDto dto, Long id) {
 		boolean update = (id != null);
 		Partner existing;
 		if (update) {
@@ -97,7 +99,8 @@ public class PartnerDtoFacade {
 		}
 		List<PartnerTag> partnerTags = partnerTagRepository.findAllById(dto.getPartnerTagIds());
 		Partner partner = partnerDtoMapper.toEntity(dto, existing, partnerTags);
-		partnerService.createOrUpdate(partner);
+		partner = partnerService.createOrUpdate(partner);
+		return partnerDtoMapper.toDto(partner);
 	}
 
 }

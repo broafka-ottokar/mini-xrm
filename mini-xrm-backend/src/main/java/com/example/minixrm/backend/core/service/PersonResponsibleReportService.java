@@ -5,6 +5,7 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort.Direction;
 import org.springframework.stereotype.Service;
+import org.springframework.validation.annotation.Validated;
 
 import com.example.minixrm.backend.core.domain.PersonResponsibleReportSortField;
 import com.example.minixrm.backend.core.domain.SortDirection;
@@ -12,6 +13,7 @@ import com.example.minixrm.backend.core.domain.entity.PersonResponsibleReportIte
 import com.example.minixrm.backend.core.repository.PersonResponsibleReportJpaRepository;
 
 @Service
+@Validated
 public class PersonResponsibleReportService {
 	
 	private final PersonResponsibleReportJpaRepository repository;

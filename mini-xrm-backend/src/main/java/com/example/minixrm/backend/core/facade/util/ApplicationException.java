@@ -6,7 +6,7 @@ public class ApplicationException extends RuntimeException {
 	private final String publicMessage;
 	
 	public ApplicationException(ErrorCode errorCode, String publicMessage, Throwable cause) {
-		super(publicMessage, cause);
+		super(errorCode + ": " + publicMessage, cause);
 		this.errorCode = errorCode;
 		this.publicMessage = publicMessage;
 	}

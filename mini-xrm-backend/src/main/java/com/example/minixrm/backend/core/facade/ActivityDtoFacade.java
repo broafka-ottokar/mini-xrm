@@ -5,6 +5,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.retry.annotation.Backoff;
 import org.springframework.retry.annotation.Retryable;
 import org.springframework.stereotype.Component;
+import org.springframework.validation.annotation.Validated;
 
 import com.example.minixrm.backend.core.domain.ActivitySortField;
 import com.example.minixrm.backend.core.domain.SortDirection;
@@ -27,6 +28,7 @@ import jakarta.transaction.Transactional;
 import jakarta.validation.Valid;
 
 @Component
+@Validated
 public class ActivityDtoFacade {
 	
 	private final ActivityService activityService;
@@ -60,7 +62,7 @@ public class ActivityDtoFacade {
 	
 	@Transactional
 	@Retryable(retryFor = OptimisticLockingFailureException.class, maxAttempts = 3, backoff = @Backoff(delay = 100))
-	public void createOrUpdateActivity(Long activityId, @Valid CreateOrUpdateActivityDto dto) {
+	public ActivityDto createOrUpdateActivity(Long activityId, @Valid CreateOrUpdateActivityDto dto) {
 		boolean update = (activityId != null);
 		Activity existing;
 		if (update) {
@@ -74,7 +76,8 @@ public class ActivityDtoFacade {
 				.findById(partnerId)
 				.orElseThrow(() -> ApplicationException.partnerNotFound(partnerId));
 		Activity entity = activityDtoMapper.fromDto(dto, existing, partner);
-		activityService.createOrUpdateActivity(entity);
+		entity = activityService.createOrUpdateActivity(entity);
+		return activityDtoMapper.toDto(entity);
 	}
 	
 	public void deleteActivity(Long activityId) {

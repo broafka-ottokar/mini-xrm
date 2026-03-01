@@ -1,15 +1,16 @@
 <div class="partner-details-container">
-	@if (loading) {
+	@if (loading()) {
 		<div>Loading partner...</div>
 	} @else {
-		@if (partner) {
+		@if (partner()) {
 			<div>
-				<h2>{{ partner.name }}</h2>
-				<p><strong>Headquarters:</strong> {{ partner.headquarters }}</p>
-				<p><strong>Status:</strong> {{ statusLabel(partner.status) }}</p>
+				<h2>{{ partner()?.name }}</h2>
+				<p><strong>Headquarters:</strong> {{ partner()?.headquarters }}</p>
+				<p><strong>Tax number:</strong> {{ partner()?.taxNumber }}</p>
+				<p><strong>Status:</strong> {{ statusLabel(partner()?.status) }}</p>
 				<p><strong>Tags:</strong>
 					<mat-chip-set>
-						<mat-chip *ngFor="let t of partner.tags">{{ t.name }}</mat-chip>
+						<mat-chip *ngFor="let t of partner()?.tags || []">{{ t.name }}</mat-chip>
 					</mat-chip-set>
 				</p>
 			</div>

@@ -2,6 +2,7 @@ package com.example.minixrm.backend.core.facade;
 
 import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Service;
+import org.springframework.validation.annotation.Validated;
 
 import com.example.minixrm.backend.core.domain.PersonResponsibleReportSortField;
 import com.example.minixrm.backend.core.domain.SortDirection;
@@ -15,6 +16,7 @@ import com.example.minixrm.backend.core.util.mapper.PersonResponsibleReportSortF
 import com.example.minixrm.backend.core.util.mapper.SortDirectionDtoMapper;
 
 @Service
+@Validated
 public class PersonResponsibleReportDtoFacade {
 	
 	private final PersonResponsibleReportService delegate;

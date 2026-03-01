@@ -1,4 +1,4 @@
-import { Component, OnInit, AfterViewInit, ViewChild, ChangeDetectorRef } from '@angular/core';
+import { Component, OnInit, AfterViewInit, ViewChild, ChangeDetectorRef, signal, WritableSignal } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { MatTableModule } from '@angular/material/table';
 import { MatPaginator, MatPaginatorModule, PageEvent } from '@angular/material/paginator';
@@ -24,62 +24,62 @@ export class PersonResponsibleReport implements OnInit, AfterViewInit {
 
 	protected displayedColumns = ['personResponsible', 'totalDurationMinutes', 'partnerCount'];
 	protected dataSource = new MatTableDataSource<PersonResponsibleReportItemView>([]);
-	protected loading = false;
-	protected totalElements = 0;
-	protected pageSize = 10;
-    protected pageIndex = 0;
+	protected loading: WritableSignal<boolean> = signal(false);
+	protected totalElements: WritableSignal<number> = signal(0);
+	protected pageSize: WritableSignal<number> = signal(10);
+	protected pageIndex: WritableSignal<number> = signal(0);
 
-	protected sortField: PersonResponsibleReportSortFieldView | null = null;
-	protected sortDirection: SortDirectionView | null = null;
+	protected sortField: WritableSignal<PersonResponsibleReportSortFieldView | null> = signal(null);
+	protected sortDirection: WritableSignal<SortDirectionView | null> = signal(null);
 
 	@ViewChild(MatPaginator) paginator!: MatPaginator;
 
 	constructor(private reportService: ReportService, private cdr: ChangeDetectorRef) { }
 
 	ngOnInit(): void {
-		this.loadPage(0, this.pageSize);
+		this.loadPage(0, this.pageSize());
 	}
 
 	ngAfterViewInit(): void {
 	}
 
 	protected loadPage(page: number, pageSize: number) {
-		this.loading = true;
-		this.pageIndex = page;
+		this.loading.set(true);
+		this.pageIndex.set(page);
 		const params: any = { page, pageSize };
-		if (this.sortField) params.sortField = this.sortField;
-		if (this.sortDirection) params.sortDirection = this.sortDirection;
+		if (this.sortField()) params.sortField = this.sortField();
+		if (this.sortDirection()) params.sortDirection = this.sortDirection();
 
 		this.reportService
 			.reportPersonResponsible(params)
 			.pipe(finalize(() => {
-				this.loading = false;
+				this.loading.set(false);
 				this.cdr.markForCheck();
 			}))
 			.subscribe({
 				next: (res) => {
 					this.dataSource.data = res.content ?? [];
-					this.totalElements = res.totalElements ?? 0;
-					this.pageSize = res.pageSize ?? pageSize;
+					this.totalElements.set(res.totalElements ?? 0);
+					this.pageSize.set(res.pageSize ?? pageSize);
 				},
 				error: (err) => {
 					this.logger.error(() => 'Failed to load person responsible report', err);
 					this.dataSource.data = [];
-					this.totalElements = 0;
+					this.totalElements.set(0);
 				}
 			});
 	}
 
 	protected toggleSort(field: PersonResponsibleReportSortFieldView) {
-		if (this.sortField !== field) {
-			this.sortField = field;
-			this.sortDirection = 'asc';
+		if (this.sortField() !== field) {
+			this.sortField.set(field);
+			this.sortDirection.set('asc');
 		} else {
-			if (this.sortDirection === 'asc') this.sortDirection = 'desc';
-			else if (this.sortDirection === 'desc') { this.sortField = null; this.sortDirection = null; }
-			else this.sortDirection = 'asc';
+			if (this.sortDirection() === 'asc') this.sortDirection.set('desc');
+			else if (this.sortDirection() === 'desc') { this.sortField.set(null); this.sortDirection.set(null); }
+			else this.sortDirection.set('asc');
 		}
-		this.loadPage(0, this.pageSize);
+		this.loadPage(0, this.pageSize());
 	}
 
 	protected onPage(event: PageEvent) {

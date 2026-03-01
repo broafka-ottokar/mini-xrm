@@ -3,6 +3,7 @@ package com.example.minixrm.backend.web.controller;
 import org.springframework.http.ResponseEntity;
 import org.springframework.lang.Nullable;
 import org.springframework.stereotype.Controller;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -22,6 +23,7 @@ import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotNull;
 
 @Controller
+@Validated
 public class PartnerController implements PartnerApi {
 
 	private final PartnerViewFacade facade;
@@ -39,7 +41,7 @@ public class PartnerController implements PartnerApi {
 		produces = { "application/json" },
 		consumes = { "application/json" }
 	)
-	public ResponseEntity<Void> createPartner(@Valid CreateOrUpdatePartnerRequestView createOrUpdatePartnerRequestView) {
+	public ResponseEntity<PartnerView> createPartner(@Valid CreateOrUpdatePartnerRequestView createOrUpdatePartnerRequestView) {
 		return this.updatePartner(null, createOrUpdatePartnerRequestView);
 	}
 
@@ -73,12 +75,12 @@ public class PartnerController implements PartnerApi {
 		produces = { "application/json" },
 		consumes = { "application/json" }
 	)
-	public ResponseEntity<Void> updatePartner(
+	public ResponseEntity<PartnerView> updatePartner(
 			@NotNull @Min(1) @Max(9223372036854775807L) Long partnerId,
 			@Valid CreateOrUpdatePartnerRequestView createOrUpdatePartnerRequestView
 	) {
-		facade.createOrUpdate(createOrUpdatePartnerRequestView, partnerId);
-		return ResponseEntity.noContent().build();
+		PartnerView partnerView = facade.createOrUpdate(createOrUpdatePartnerRequestView, partnerId);
+		return ResponseEntity.ok(partnerView);
 	}
 
 	@Override

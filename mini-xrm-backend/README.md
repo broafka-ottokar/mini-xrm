@@ -37,6 +37,7 @@
    * ez eredményezett néhány furcsaságot, pl.:
      * manuális change detection triggerelést a paginálásnál
      * a Delete gomb long-press működése is lehetne átláthatóbb
+     * a táblázat rendezésnél a mezőneveket beégette, nem a Swagger által generált enumokat használja
    * ezzel szemben a Java backend lényegében kézműves termék, ott leginkább csak Copilot kódkiegészítést használtam
  1. az _tevékenység_ szerkesztő formon a partner dropdown a paginált partner listázó REST endpointból táplálkozik
   

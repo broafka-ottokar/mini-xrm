@@ -84,9 +84,9 @@ export class PartnerService extends BaseService {
      * @param reportProgress flag to report request and response progress.
      * @param options additional options
      */
-    public createPartner(requestParameters: CreatePartnerRequestParams, observe?: 'body', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<any>;
-    public createPartner(requestParameters: CreatePartnerRequestParams, observe?: 'response', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<HttpResponse<any>>;
-    public createPartner(requestParameters: CreatePartnerRequestParams, observe?: 'events', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<HttpEvent<any>>;
+    public createPartner(requestParameters: CreatePartnerRequestParams, observe?: 'body', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<PartnerView>;
+    public createPartner(requestParameters: CreatePartnerRequestParams, observe?: 'response', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<HttpResponse<PartnerView>>;
+    public createPartner(requestParameters: CreatePartnerRequestParams, observe?: 'events', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<HttpEvent<PartnerView>>;
     public createPartner(requestParameters: CreatePartnerRequestParams, observe: any = 'body', reportProgress: boolean = false, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<any> {
         const createOrUpdatePartnerRequestView = requestParameters?.createOrUpdatePartnerRequestView;
         if (createOrUpdatePartnerRequestView === null || createOrUpdatePartnerRequestView === undefined) {
@@ -129,7 +129,7 @@ export class PartnerService extends BaseService {
 
         let localVarPath = `/v1/partners`;
         const { basePath, withCredentials } = this.configuration;
-        return this.httpClient.request<any>('post', `${basePath}${localVarPath}`,
+        return this.httpClient.request<PartnerView>('post', `${basePath}${localVarPath}`,
             {
                 context: localVarHttpContext,
                 body: createOrUpdatePartnerRequestView,
@@ -377,9 +377,9 @@ export class PartnerService extends BaseService {
      * @param reportProgress flag to report request and response progress.
      * @param options additional options
      */
-    public updatePartner(requestParameters: UpdatePartnerRequestParams, observe?: 'body', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<any>;
-    public updatePartner(requestParameters: UpdatePartnerRequestParams, observe?: 'response', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<HttpResponse<any>>;
-    public updatePartner(requestParameters: UpdatePartnerRequestParams, observe?: 'events', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<HttpEvent<any>>;
+    public updatePartner(requestParameters: UpdatePartnerRequestParams, observe?: 'body', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<PartnerView>;
+    public updatePartner(requestParameters: UpdatePartnerRequestParams, observe?: 'response', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<HttpResponse<PartnerView>>;
+    public updatePartner(requestParameters: UpdatePartnerRequestParams, observe?: 'events', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<HttpEvent<PartnerView>>;
     public updatePartner(requestParameters: UpdatePartnerRequestParams, observe: any = 'body', reportProgress: boolean = false, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<any> {
         const partnerId = requestParameters?.partnerId;
         if (partnerId === null || partnerId === undefined) {
@@ -426,7 +426,7 @@ export class PartnerService extends BaseService {
 
         let localVarPath = `/v1/partners/${this.configuration.encodeParam({name: "partnerId", value: partnerId, in: "path", style: "simple", explode: false, dataType: "number", dataFormat: "int64"})}`;
         const { basePath, withCredentials } = this.configuration;
-        return this.httpClient.request<any>('put', `${basePath}${localVarPath}`,
+        return this.httpClient.request<PartnerView>('put', `${basePath}${localVarPath}`,
             {
                 context: localVarHttpContext,
                 body: createOrUpdatePartnerRequestView,

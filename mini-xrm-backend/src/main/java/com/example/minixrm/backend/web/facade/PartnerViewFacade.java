@@ -5,6 +5,7 @@ import java.util.Optional;
 import org.springframework.stereotype.Component;
 
 import com.example.minixrm.backend.core.facade.PartnerDtoFacade;
+import com.example.minixrm.backend.core.facade.dto.PartnerDto;
 import com.example.minixrm.backend.core.facade.dto.PartnerVPageDto;
 import com.example.minixrm.backend.core.facade.dto.PartnerVSortFieldDto;
 import com.example.minixrm.backend.core.facade.dto.SortDirectionDto;
@@ -64,8 +65,9 @@ public class PartnerViewFacade {
 				.map(partnerViewMapper::toView);
 	}
 
-	public void createOrUpdate(CreateOrUpdatePartnerRequestView dto, Long partnerId) {
-		delegate.createOrUpdate(partnerViewMapper.toDto(dto), partnerId);
+	public PartnerView createOrUpdate(CreateOrUpdatePartnerRequestView dto, Long partnerId) {
+		PartnerDto partnerDto = delegate.createOrUpdate(partnerViewMapper.toDto(dto), partnerId);
+		return partnerViewMapper.toView(partnerDto);
 	}
 
 }

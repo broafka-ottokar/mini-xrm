@@ -3,6 +3,7 @@ package com.example.minixrm.backend.web.facade;
 import org.springframework.stereotype.Component;
 
 import com.example.minixrm.backend.core.facade.ActivityDtoFacade;
+import com.example.minixrm.backend.core.facade.dto.ActivityDto;
 import com.example.minixrm.backend.core.facade.dto.ActivitySortFieldDto;
 import com.example.minixrm.backend.core.facade.dto.SortDirectionDto;
 import com.example.minixrm.backend.web.openapi.v1.model.ActivityPageView;
@@ -54,11 +55,12 @@ public class ActivityViewFacade {
 		return activityViewMapper.toView(delegate.findActivitiesByPartner(partnerId, page, pageSize, sortFieldDto, sortDirectionDto));
 	}
 
-	public void createOrUpdateActivity(
+	public ActivityView createOrUpdateActivity(
 			Long activityId,
 			CreateOrUpdateActivityRequestView createOrUpdateActivityRequestView
 	) {
-		delegate.createOrUpdateActivity(activityId, activityViewMapper.fromView(createOrUpdateActivityRequestView));
+		ActivityDto dto = delegate.createOrUpdateActivity(activityId, activityViewMapper.fromView(createOrUpdateActivityRequestView));
+		return activityViewMapper.toView(dto);
 	}
 
 }

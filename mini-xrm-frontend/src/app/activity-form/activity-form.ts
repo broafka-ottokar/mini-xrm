@@ -1,4 +1,4 @@
-import { Component, OnInit, ChangeDetectorRef } from '@angular/core';
+import { Component, OnInit, ChangeDetectorRef, signal, WritableSignal } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ReactiveFormsModule, FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { MatFormFieldModule } from '@angular/material/form-field';
@@ -25,7 +25,8 @@ import { getLogger } from '../logging/logger';
 export class ActivityForm implements OnInit {
 	private readonly logger = getLogger('component.ActivityForm');
 	protected form!: FormGroup;
-	protected loading = false;
+	protected loading: WritableSignal<boolean> = signal(false);
+	protected saving: WritableSignal<boolean> = signal(false);
 	protected editingId?: number;
 	protected partners: PartnerVView[] = [];
 
@@ -54,12 +55,12 @@ export class ActivityForm implements OnInit {
 				this.partners = res.content ?? [];
 				this.cdr.markForCheck();
 			},
-                error: (err) => {
-                	this.logger.error(() => 'Failed to load partners for activity form', err);
+			error: (err) => {
+				this.logger.error(() => 'Failed to load partners for activity form', err);
 				this.partners = [];
 				this.cdr.markForCheck();
 				this.snackBar.open('Failed to load partners', 'Close', { duration: 5000 });
-            	}
+			}
 		});
 
 		const idParam = this.route.snapshot.paramMap.get('id');
@@ -70,11 +71,11 @@ export class ActivityForm implements OnInit {
 	}
 
 	protected loadActivity(id: number) {
-		this.loading = true;
+		this.loading.set(true);
 		this.activityService
 			.loadActivity({ activityId: id })
 			.pipe(finalize(() => {
-				this.loading = false;
+				this.loading.set(false);
 				this.cdr.markForCheck();
 			}))
 			.subscribe({
@@ -90,10 +91,16 @@ export class ActivityForm implements OnInit {
 					});
 				},
 				error: (err) => {
-					this.logger.error(() => 'Failed to load activity', err);
-					this.snackBar.open('Failed to load activity', 'Close', { duration: 5000 });
+					this.handleActivityLoadError(err);
 				}
 			});
+	}
+
+	protected handleActivityLoadError(err: any) {
+		this.logger.error(() => 'Failed to load activity', err);
+		this.loading.set(false);
+		this.cdr.markForCheck();
+		this.snackBar.open('Failed to load activity', 'Close', { duration: 5000 });
 	}
 
 	protected save() {
@@ -103,23 +110,63 @@ export class ActivityForm implements OnInit {
 		}
 
 		const payload = this.form.value;
-		this.loading = true;
+		this.saving.set(true);
 
 		if (this.editingId != null) {
 			this.activityService
-				.updateActivity({ activityId: this.editingId, createOrUpdateActivityRequestView: payload })
-				.pipe(finalize(() => { this.loading = false; this.cdr.markForCheck(); }))
-				.subscribe({ next: () => { this.snackBar.open('Activity saved', 'Close', { duration: 3000 }); this.router.navigate(['/partner-details', payload.partnerId]); }, error: (err) => { this.logger.error(() => 'Failed to update activity', err); this.snackBar.open('Failed to update activity', 'Close', { duration: 5000 }); } });
+				.updateActivity({
+					activityId: this.editingId,
+					createOrUpdateActivityRequestView: payload
+				})
+					.pipe(finalize(() => {
+							this.saving.set(false);
+							this.cdr.markForCheck();
+						}))
+				.subscribe({
+					next: () => {
+						this.handleActivitySaved(payload);
+					},
+					error: (err) => {
+						this.handleActivitySaveError(err);
+					}
+				});
 		} else {
 			this.activityService
-				.createActivity({ createOrUpdateActivityRequestView: payload })
-				.pipe(finalize(() => { this.loading = false; this.cdr.markForCheck(); }))
-				.subscribe({ next: () => { this.snackBar.open('Activity saved', 'Close', { duration: 3000 }); this.router.navigate(['/partner-details', payload.partnerId]); }, error: (err) => { this.logger.error(() => 'Failed to create activity', err); this.snackBar.open('Failed to create activity', 'Close', { duration: 5000 }); } });
+				.createActivity({
+					createOrUpdateActivityRequestView: payload
+				})
+					.pipe(finalize(() => {
+							this.saving.set(false);
+							this.cdr.markForCheck();
+						}))
+				.subscribe({
+					next: () => {
+						this.handleActivitySaved(payload);
+					},
+					error: (err) => {
+						this.handleActivitySaveError(err);
+					}
+				});
 		}
 	}
 
+	handleActivitySaveError(err: any) {
+		this.logger.error(() => 'Failed to create activity', err);
+		this.snackBar.open('Failed to create activity', 'Close', { duration: 5000 });
+	}
+
+	handleActivitySaved(payload: any) {
+		this.snackBar.open('Activity saved', 'Close', { duration: 3000 });
+		this.router.navigate(['/partner-details', payload.partnerId]);
+	}
+
 	protected cancel() {
-		this.router.navigate(['/']);
+		const partnerId = this.form.value.partnerId;
+		if (partnerId) {
+			this.router.navigate(['/partner-details', partnerId]);
+		} else {
+			this.router.navigate(['/']);
+		}
 	}
 
 }

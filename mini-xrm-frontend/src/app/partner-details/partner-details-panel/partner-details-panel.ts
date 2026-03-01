@@ -1,4 +1,4 @@
-import { Component, OnInit, ChangeDetectorRef, Input } from '@angular/core';
+import { Component, OnInit, ChangeDetectorRef, Input, signal, WritableSignal } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { MatChipsModule } from '@angular/material/chips';
 import { finalize } from 'rxjs/operators';
@@ -20,8 +20,8 @@ export class PartnerDetailsPanel implements OnInit {
 
 	@Input() partnerId!: number;
 
-	protected partner?: PartnerView;
-	protected loading = false;
+	protected partner: WritableSignal<PartnerView | undefined> = signal<PartnerView | undefined>(undefined);
+	protected loading: WritableSignal<boolean> = signal<boolean>(false);
 
 	constructor(private partnerService: PartnerService, private cdr: ChangeDetectorRef) { }
 
@@ -30,18 +30,18 @@ export class PartnerDetailsPanel implements OnInit {
 	}
 
 	protected load(id: number) {
-		this.loading = true;
+		this.loading.set(true);
 		this.partnerService
 			.loadPartner({ partnerId: id })
 			.pipe(finalize(() => {
-				this.loading = false;
+				this.loading.set(false);
 				this.cdr.markForCheck();
 			}))
 			.subscribe({
-				next: (p) => (this.partner = p),
+				next: (p) => this.partner.set(p),
 				error: (err) => {
 					this.logger.error(() => 'Failed to load partner details', err);
-					this.partner = undefined;
+					this.partner.set(undefined);
 				},
 			});
 	}

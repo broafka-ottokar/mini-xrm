@@ -1,26 +1,26 @@
 <div class="partner-activity-list-container">
-	@if (loading) {
+	@if (loading()) {
 		<mat-progress-spinner mode="indeterminate"></mat-progress-spinner>
 	} @else {
 		<table mat-table [dataSource]="dataSource" class="mat-elevation-z8">
 	
 			<ng-container matColumnDef="subject">
-				<th mat-header-cell *matHeaderCellDef (click)="toggleSort('subject')" style="cursor:pointer"> Subject <span class="sort-indicator">{{ sortField === 'subject' ? (sortDirection==='asc' ? '▲' : '▼') : '' }}</span> </th>
+				<th mat-header-cell *matHeaderCellDef (click)="toggleSort('subject')" style="cursor:pointer"> Subject <span class="sort-indicator">{{ sortField() === 'subject' ? (sortDirection() === 'asc' ? '▲' : '▼') : '' }}</span> </th>
 				<td mat-cell *matCellDef="let element"> <a [routerLink]="['/activity', element.id]"> {{ element.subject !== '' ? element.subject : 'n/a' }} </a> </td>
 			</ng-container>
 	
 			<ng-container matColumnDef="type">
-				<th mat-header-cell *matHeaderCellDef (click)="toggleSort('type')" style="cursor:pointer"> Type <span class="sort-indicator">{{ sortField === 'type' ? (sortDirection==='asc' ? '▲' : '▼') : '' }}</span> </th>
+				<th mat-header-cell *matHeaderCellDef (click)="toggleSort('type')" style="cursor:pointer"> Type <span class="sort-indicator">{{ sortField() === 'type' ? (sortDirection() === 'asc' ? '▲' : '▼') : '' }}</span> </th>
 				<td mat-cell *matCellDef="let element"> {{ element.type }} </td>
 			</ng-container>
 	
 			<ng-container matColumnDef="durationMinutes">
-				<th mat-header-cell *matHeaderCellDef (click)="toggleSort('durationMinutes')" style="cursor:pointer"> Duration (min) <span class="sort-indicator">{{ sortField === 'durationMinutes' ? (sortDirection==='asc' ? '▲' : '▼') : '' }}</span> </th>
+				<th mat-header-cell *matHeaderCellDef (click)="toggleSort('durationMinutes')" style="cursor:pointer"> Duration (min) <span class="sort-indicator">{{ sortField() === 'durationMinutes' ? (sortDirection() === 'asc' ? '▲' : '▼') : '' }}</span> </th>
 				<td mat-cell *matCellDef="let element"> {{ element.durationMinutes }} </td>
 			</ng-container>
 	
 			<ng-container matColumnDef="personResponsible">
-				<th mat-header-cell *matHeaderCellDef (click)="toggleSort('personResponsible')" style="cursor:pointer"> Person Responsible <span class="sort-indicator">{{ sortField === 'personResponsible' ? (sortDirection==='asc' ? '▲' : '▼') : '' }}</span> </th>
+				<th mat-header-cell *matHeaderCellDef (click)="toggleSort('personResponsible')" style="cursor:pointer"> Person Responsible <span class="sort-indicator">{{ sortField() === 'personResponsible' ? (sortDirection() === 'asc' ? '▲' : '▼') : '' }}</span> </th>
 				<td mat-cell *matCellDef="let element"> {{ element.personResponsible }} </td>
 			</ng-container>
 	
@@ -47,6 +47,6 @@
 			<tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
 		</table>
 		
-			<mat-paginator [length]="totalElements" [pageSize]="pageSize" [pageIndex]="pageIndex" [pageSizeOptions]="[5,10,25]" (page)="onPage($event)"></mat-paginator>
+			<mat-paginator [length]="totalElements()" [pageSize]="pageSize()" [pageIndex]="pageIndex()" [pageSizeOptions]="[5,10,25]" (page)="onPage($event)"></mat-paginator>
 	}
 </div>

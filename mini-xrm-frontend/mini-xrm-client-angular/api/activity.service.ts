@@ -84,9 +84,9 @@ export class ActivityService extends BaseService {
      * @param reportProgress flag to report request and response progress.
      * @param options additional options
      */
-    public createActivity(requestParameters: CreateActivityRequestParams, observe?: 'body', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<any>;
-    public createActivity(requestParameters: CreateActivityRequestParams, observe?: 'response', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<HttpResponse<any>>;
-    public createActivity(requestParameters: CreateActivityRequestParams, observe?: 'events', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<HttpEvent<any>>;
+    public createActivity(requestParameters: CreateActivityRequestParams, observe?: 'body', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<ActivityView>;
+    public createActivity(requestParameters: CreateActivityRequestParams, observe?: 'response', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<HttpResponse<ActivityView>>;
+    public createActivity(requestParameters: CreateActivityRequestParams, observe?: 'events', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<HttpEvent<ActivityView>>;
     public createActivity(requestParameters: CreateActivityRequestParams, observe: any = 'body', reportProgress: boolean = false, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<any> {
         const createOrUpdateActivityRequestView = requestParameters?.createOrUpdateActivityRequestView;
         if (createOrUpdateActivityRequestView === null || createOrUpdateActivityRequestView === undefined) {
@@ -129,7 +129,7 @@ export class ActivityService extends BaseService {
 
         let localVarPath = `/v1/activities`;
         const { basePath, withCredentials } = this.configuration;
-        return this.httpClient.request<any>('post', `${basePath}${localVarPath}`,
+        return this.httpClient.request<ActivityView>('post', `${basePath}${localVarPath}`,
             {
                 context: localVarHttpContext,
                 body: createOrUpdateActivityRequestView,
@@ -371,9 +371,9 @@ export class ActivityService extends BaseService {
      * @param reportProgress flag to report request and response progress.
      * @param options additional options
      */
-    public updateActivity(requestParameters: UpdateActivityRequestParams, observe?: 'body', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<any>;
-    public updateActivity(requestParameters: UpdateActivityRequestParams, observe?: 'response', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<HttpResponse<any>>;
-    public updateActivity(requestParameters: UpdateActivityRequestParams, observe?: 'events', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<HttpEvent<any>>;
+    public updateActivity(requestParameters: UpdateActivityRequestParams, observe?: 'body', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<ActivityView>;
+    public updateActivity(requestParameters: UpdateActivityRequestParams, observe?: 'response', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<HttpResponse<ActivityView>>;
+    public updateActivity(requestParameters: UpdateActivityRequestParams, observe?: 'events', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<HttpEvent<ActivityView>>;
     public updateActivity(requestParameters: UpdateActivityRequestParams, observe: any = 'body', reportProgress: boolean = false, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<any> {
         const activityId = requestParameters?.activityId;
         if (activityId === null || activityId === undefined) {
@@ -420,7 +420,7 @@ export class ActivityService extends BaseService {
 
         let localVarPath = `/v1/activities/${this.configuration.encodeParam({name: "activityId", value: activityId, in: "path", style: "simple", explode: false, dataType: "number", dataFormat: "int64"})}`;
         const { basePath, withCredentials } = this.configuration;
-        return this.httpClient.request<any>('put', `${basePath}${localVarPath}`,
+        return this.httpClient.request<ActivityView>('put', `${basePath}${localVarPath}`,
             {
                 context: localVarHttpContext,
                 body: createOrUpdateActivityRequestView,

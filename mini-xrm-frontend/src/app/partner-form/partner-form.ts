@@ -1,4 +1,4 @@
-import { Component, OnInit, ChangeDetectorRef } from '@angular/core';
+import { Component, OnInit, ChangeDetectorRef, signal, WritableSignal } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ReactiveFormsModule, FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { MatFormFieldModule } from '@angular/material/form-field';
@@ -25,8 +25,8 @@ export class PartnerForm implements OnInit {
 	private readonly logger = getLogger('component.PartnerForm');
 
 	form: FormGroup;
-	loading = false;
-	saving = false;
+	loading: WritableSignal<boolean> = signal(false);
+	saving: WritableSignal<boolean> = signal(false);
 	partnerId?: number;
 	tags: Array<any> = [];
 
@@ -65,15 +65,20 @@ export class PartnerForm implements OnInit {
 				this.cdr.markForCheck();
 			},
 			error: (err) => {
-				this.logger.error(() => 'Failed to load partner tags', err);
-				this.tags = [];
-				this.cdr.markForCheck();
+				this.handlePartnerTagLoadError(err);
 			}
 		});
 	}
 
+	protected handlePartnerTagLoadError(err: any) {
+		this.logger.error(() => 'Failed to load partner tags', err);
+		this.tags = [];
+		this.cdr.markForCheck();
+		this.snackBar.open('Failed to load partner tags', 'OK', { duration: 5000 });
+	}
+
 	private loadPartner(id: number) {
-		this.loading = true;
+		this.loading.set(true);
 		this.partnerService.loadPartner({ partnerId: id }).subscribe({
 			next: partner => {
 				this.form.patchValue({
@@ -83,16 +88,20 @@ export class PartnerForm implements OnInit {
 					status: partner.status,
 					tagIds: (partner.tags || []).map(t => (t as any).id)
 				});
-				this.loading = false;
+				this.loading.set(false);
 				this.cdr.markForCheck();
 			},
 			error: (err) => {
-				this.logger.error(() => 'Failed to load partner', err);
-				this.snackBar.open('Failed to load partner', 'OK', { duration: 5000 });
-				this.loading = false;
-				this.cdr.markForCheck();
+				this.handlePartnerLoadError(err);
 			}
 		});
+	}
+
+	protected handlePartnerLoadError(err: any) {
+		this.logger.error(() => 'Failed to load partner', err);
+		this.loading.set(false);
+		this.cdr.markForCheck();
+		this.snackBar.open('Failed to load partner', 'OK', { duration: 5000 });
 	}
 
 	save() {
@@ -100,7 +109,7 @@ export class PartnerForm implements OnInit {
 			this.form.markAllAsTouched();
 			return;
 		}
-		this.saving = true;
+		this.saving.set(true);
 
 		const payload: CreateOrUpdatePartnerRequestView = {
 			name: this.form.value.name,
@@ -110,23 +119,43 @@ export class PartnerForm implements OnInit {
 			tagIds: this.form.value.tagIds || []
 		};
 
-		const obs = this.partnerId
-			? this.partnerService.updatePartner({ partnerId: this.partnerId, createOrUpdatePartnerRequestView: payload })
-			: this.partnerService.createPartner({ createOrUpdatePartnerRequestView: payload });
+		if (this.partnerId) {
+			this.partnerService.updatePartner({ partnerId: this.partnerId, createOrUpdatePartnerRequestView: payload }).subscribe({
+				next: () => {
+					this.handlePartnerSaved(payload);
+				},
+				error: (err) => {
+					this.handlePartnerSaveError(err);
+				}
+			});
+		} else {
+			this.partnerService.createPartner({ createOrUpdatePartnerRequestView: payload }).subscribe({
+				next: (res) => {
+					this.partnerId = res.id;
+					this.handlePartnerSaved(payload);
+				},
+				error: (err) => {
+					this.handlePartnerSaveError(err);
+				}
+			});
+		}
+	}
 
-		obs.subscribe({
-			next: () => {
-				this.saving = false;
-				this.snackBar.open('Partner saved', 'OK', { duration: 3000 });
-				this.router.navigate(['partner-list']);
-			},
-			error: (err) => {
-				this.logger.error(() => 'Failed to save partner', err);
-				this.saving = false;
-				this.cdr.markForCheck();
-				this.snackBar.open('Failed to save partner', 'OK', { duration: 5000 });
-			}
-		});
+	handlePartnerSaveError(err: any) {
+		this.logger.error(() => 'Failed to save partner', err);
+		this.saving.set(false);
+		this.cdr.markForCheck();
+		this.snackBar.open('Failed to save partner', 'OK', { duration: 5000 });
+	}
+
+	protected handlePartnerSaved(payload: CreateOrUpdatePartnerRequestView) {
+		this.saving.set(false);
+		this.snackBar.open('Partner saved', 'OK', { duration: 3000 });
+		if (this.partnerId) {
+			this.router.navigate(['partner-details', this.partnerId]);
+		} else {
+			this.router.navigate(['/']);
+		}
 	}
 
 	protected cancel() {

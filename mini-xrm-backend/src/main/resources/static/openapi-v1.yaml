@@ -38,8 +38,12 @@ paths:
                         schema:
                             $ref: '#/components/schemas/CreateOrUpdatePartnerRequestView'
             responses:
-                '204':
-                    $ref: '#/components/responses/NoContent'
+                '200':
+                    description: Successful response
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/PartnerView'
                 '400':
                     $ref: '#/components/responses/BadRequest'
                 '409':
@@ -84,8 +88,12 @@ paths:
                         schema:
                             $ref: '#/components/schemas/CreateOrUpdatePartnerRequestView'
             responses:
-                '204':
-                    $ref: '#/components/responses/NoContent'
+                '200':
+                    description: Successful response
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/PartnerView'
                 '400':
                     $ref: '#/components/responses/BadRequest'
                 '404':
@@ -150,8 +158,12 @@ paths:
                         schema:
                             $ref: '#/components/schemas/CreateOrUpdateActivityRequestView'
             responses:
-                '204':
-                    $ref: '#/components/responses/NoContent'
+                '200':
+                    description: Successful response
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/ActivityView'
                 '400':
                     $ref: '#/components/responses/BadRequest'
                 '409':
@@ -196,8 +208,12 @@ paths:
                         schema:
                             $ref: '#/components/schemas/CreateOrUpdateActivityRequestView'
             responses:
-                '204':
-                    $ref: '#/components/responses/NoContent'
+                '200':
+                    description: Successful response
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/ActivityView'
                 '400':
                     $ref: '#/components/responses/BadRequest'
                 '404':

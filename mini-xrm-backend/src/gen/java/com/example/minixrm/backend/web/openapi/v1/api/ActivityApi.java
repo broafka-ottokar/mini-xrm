@@ -35,7 +35,7 @@ public interface ActivityApi {
      * POST /v1/activities : Create a new activity
      *
      * @param createOrUpdateActivityRequestView  (required)
-     * @return No Content (status code 204)
+     * @return Successful response (status code 200)
      *         or Bad Request, e.g. validation failed for the request body or parameters (status code 400)
      *         or Conflict, e.g. trying to create an entity with a unique field value that already exists, or concurrent modification detected (status code 409)
      *         or Unprocessable Entity, e.g. an entity referenced by an ID in the request body is missing (status code 422)
@@ -47,7 +47,7 @@ public interface ActivityApi {
         produces = { "application/json" },
         consumes = { "application/json" }
     )
-    ResponseEntity<Void> createActivity(
+    ResponseEntity<ActivityView> createActivity(
          @Valid @RequestBody CreateOrUpdateActivityRequestView createOrUpdateActivityRequestView
     );
 
@@ -128,7 +128,7 @@ public interface ActivityApi {
      *
      * @param activityId The ID of the activity (required)
      * @param createOrUpdateActivityRequestView  (required)
-     * @return No Content (status code 204)
+     * @return Successful response (status code 200)
      *         or Bad Request, e.g. validation failed for the request body or parameters (status code 400)
      *         or Not Found, e.g. trying to retrieve, update or delete an entity by an ID in the path does not exist (status code 404)
      *         or Conflict, e.g. trying to create an entity with a unique field value that already exists, or concurrent modification detected (status code 409)
@@ -141,7 +141,7 @@ public interface ActivityApi {
         produces = { "application/json" },
         consumes = { "application/json" }
     )
-    ResponseEntity<Void> updateActivity(
+    ResponseEntity<ActivityView> updateActivity(
         @NotNull @Min(value = 1L) @Max(value = 9223372036854775807L)  @PathVariable("activityId") Long activityId,
          @Valid @RequestBody CreateOrUpdateActivityRequestView createOrUpdateActivityRequestView
     );

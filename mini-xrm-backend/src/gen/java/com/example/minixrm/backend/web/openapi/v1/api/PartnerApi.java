@@ -35,7 +35,7 @@ public interface PartnerApi {
      * POST /v1/partners : Create a new partner
      *
      * @param createOrUpdatePartnerRequestView  (required)
-     * @return No Content (status code 204)
+     * @return Successful response (status code 200)
      *         or Bad Request, e.g. validation failed for the request body or parameters (status code 400)
      *         or Conflict, e.g. trying to create an entity with a unique field value that already exists, or concurrent modification detected (status code 409)
      *         or Unprocessable Entity, e.g. an entity referenced by an ID in the request body is missing (status code 422)
@@ -47,7 +47,7 @@ public interface PartnerApi {
         produces = { "application/json" },
         consumes = { "application/json" }
     )
-    ResponseEntity<Void> createPartner(
+    ResponseEntity<PartnerView> createPartner(
          @Valid @RequestBody CreateOrUpdatePartnerRequestView createOrUpdatePartnerRequestView
     );
 
@@ -127,7 +127,7 @@ public interface PartnerApi {
      *
      * @param partnerId The ID of the partner (required)
      * @param createOrUpdatePartnerRequestView  (required)
-     * @return No Content (status code 204)
+     * @return Successful response (status code 200)
      *         or Bad Request, e.g. validation failed for the request body or parameters (status code 400)
      *         or Not Found, e.g. trying to retrieve, update or delete an entity by an ID in the path does not exist (status code 404)
      *         or Conflict, e.g. trying to create an entity with a unique field value that already exists, or concurrent modification detected (status code 409)
@@ -140,7 +140,7 @@ public interface PartnerApi {
         produces = { "application/json" },
         consumes = { "application/json" }
     )
-    ResponseEntity<Void> updatePartner(
+    ResponseEntity<PartnerView> updatePartner(
         @NotNull @Min(value = 1L) @Max(value = 9223372036854775807L)  @PathVariable("partnerId") Long partnerId,
          @Valid @RequestBody CreateOrUpdatePartnerRequestView createOrUpdatePartnerRequestView
     );

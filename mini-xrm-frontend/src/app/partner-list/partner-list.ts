@@ -1,4 +1,4 @@
-import { Component, OnInit, AfterViewInit, ViewChild, ChangeDetectorRef } from '@angular/core';
+import { Component, OnInit, AfterViewInit, ViewChild, ChangeDetectorRef, signal, WritableSignal } from '@angular/core';
 import { RouterLinkWithHref } from '@angular/router';
 import { CommonModule } from '@angular/common';
 import { MatTableModule } from '@angular/material/table';
@@ -28,50 +28,50 @@ export class PartnerList implements OnInit, AfterViewInit {
     private readonly logger = getLogger('component.PartnerList');
 
     protected displayedColumns = ['name', 'headquarters', 'status', 'tags', 'actions'];
-    protected dataSource = new MatTableDataSource<PartnerVView>([]);
-    protected loading = false;
-    protected totalElements = 0;
-    protected pageSize = 10;
-    protected pageIndex = 0;
-    protected tags: { id: number; name: string }[] = [];
-    protected selectedTagId: number | null = null;
-    protected sortField: string | null = null;
-    protected sortDirection: 'asc' | 'desc' | null = null;
+    protected dataSource: WritableSignal<MatTableDataSource<PartnerVView>> = signal(new MatTableDataSource<PartnerVView>([]));
+    protected loading: WritableSignal<boolean> = signal(false);
+    protected totalElements: WritableSignal<number> = signal(0);
+    protected pageSize: WritableSignal<number> = signal(10);
+    protected pageIndex: WritableSignal<number> = signal(0);
+    protected tags: WritableSignal<{ id: number; name: string }[]> = signal([]);
+    protected selectedTagId: WritableSignal<number | null> = signal(null);
+    protected sortField: WritableSignal<string | null> = signal(null);
+    protected sortDirection: WritableSignal<'asc' | 'desc' | null> = signal(null);
 
     @ViewChild(MatPaginator) paginator!: MatPaginator;
 
     private readonly HOLD_MS = 1000;
     private holdIntervals = new Map<number, any>();
-    protected progressMap: { [id: number]: number } = {};
+    protected progressMap: WritableSignal<{ [id: number]: number }> = signal({});
 
     constructor(private partnerService: PartnerService, private partnerTagService: PartnerTagService, private cdr: ChangeDetectorRef, private snackBar: MatSnackBar) { }
 
     ngOnInit(): void {
         this.loadTags();
-        this.loadPage(0, this.pageSize);
+        this.loadPage(0, this.pageSize());
     }
 
     ngAfterViewInit(): void {
     }
 
     protected loadPage(page: number, pageSize: number) {
-        this.loading = true;
-        this.pageIndex = page;
+        this.loading.set(true);
+        this.pageIndex.set(page);
         const params: any = { page, pageSize };
-        if (this.selectedTagId != null) params.partnerTagId = this.selectedTagId;
-        if (this.sortField) params.sortField = this.sortField;
-        if (this.sortDirection) params.sortDirection = this.sortDirection;
+        if (this.selectedTagId() != null) params.partnerTagId = this.selectedTagId();
+        if (this.sortField()) params.sortField = this.sortField();
+        if (this.sortDirection()) params.sortDirection = this.sortDirection();
         this.partnerService
             .searchPartners(params)
             .pipe(finalize(() => {
-                this.loading = false;
+                this.loading.set(false);
                 this.cdr.markForCheck();
             }))
             .subscribe({
                 next: (res) => {
-                    this.dataSource.data = res.content ?? [];
-                    this.totalElements = res.totalElements ?? 0;
-                    this.pageSize = res.pageSize ?? pageSize;
+                    this.dataSource.set(new MatTableDataSource<PartnerVView>(res.content ?? []));
+                    this.totalElements.set(res.totalElements ?? 0);
+                    this.pageSize.set(res.pageSize ?? pageSize);
                 },
                 error: (err) => {
                     this.logger.error(() => 'Failed to load partners', err);
@@ -80,30 +80,30 @@ export class PartnerList implements OnInit, AfterViewInit {
     }
 
     protected toggleSort(field: string) {
-        if (this.sortField !== field) {
-            this.sortField = field;
-            this.sortDirection = 'asc';
+        if (this.sortField() !== field) {
+            this.sortField.set(field);
+            this.sortDirection.set('asc');
         } else {
-            if (this.sortDirection === 'asc') this.sortDirection = 'desc';
-            else if (this.sortDirection === 'desc') { this.sortField = null; this.sortDirection = null; }
-            else this.sortDirection = 'asc';
+            if (this.sortDirection() === 'asc') this.sortDirection.set('desc');
+            else if (this.sortDirection() === 'desc') { this.sortField.set(null); this.sortDirection.set(null); }
+            else this.sortDirection.set('asc');
         }
-        this.loadPage(0, this.pageSize);
+        this.loadPage(0, this.pageSize());
     }
 
     protected loadTags() {
         this.partnerTagService.listPartnerTags().subscribe({
             next: (res: any) => {
-                this.tags = res.content.map((t: any) => ({ id: t.id, name: t.name }));
+                this.tags.set(res.content.map((t: any) => ({ id: t.id, name: t.name })));
             },
-            error: (err) => { this.logger.error(() => 'Failed to load partner tags', err); this.tags = []; }
+            error: (err) => { this.logger.error(() => 'Failed to load partner tags', err); this.tags.set([]); }
         });
     }
 
     protected onTagChange(tagId: string) {
         const id = tagId === '' ? null : Number(tagId);
-        this.selectedTagId = id;
-        this.loadPage(0, this.pageSize);
+        this.selectedTagId.set(id);
+        this.loadPage(0, this.pageSize());
     }
 
     protected onPage(event: PageEvent) {
@@ -117,8 +117,8 @@ export class PartnerList implements OnInit, AfterViewInit {
                 setTimeout(() => {
                     // defer UI mutations to the next macrotask to avoid
                     // ExpressionChangedAfterItHasBeenCheckedError
-                    this.loadPage(this.pageIndex, this.pageSize);
-                    if (id != null) this.progressMap[id] = 0;
+                    this.loadPage(this.pageIndex(), this.pageSize());
+                    if (id != null) this.progressMap.update(m => { const copy = { ...m }; copy[id] = 0; return copy; });
                     this.cdr.markForCheck();
                 }, 0);
                 this.snackBar.open('Partner deleted', 'OK', { duration: 3000 });
@@ -133,14 +133,16 @@ export class PartnerList implements OnInit, AfterViewInit {
     protected startHoldDelete(element: PartnerVView, event: Event) {
         try { event.preventDefault(); } catch { }
         const id = element.id!;
-        if (this.holdIntervals.has(id)) return;
-        this.progressMap[id] = 0;
+        if (this.holdIntervals.has(id)) {
+            return;
+        }
+        this.progressMap.update(m => { const copy = { ...m }; copy[id] = 0; return copy; });
         const start = Date.now();
         const stepMs = 50;
         const interval = setInterval(() => {
             const elapsed = Date.now() - start;
             const p = Math.min(100, Math.round((elapsed / this.HOLD_MS) * 100));
-            this.progressMap[id] = p;
+            this.progressMap.update(m => { const copy = { ...m }; copy[id] = p; return copy; });
             this.cdr.markForCheck();
             if (p >= 100) {
                 clearInterval(interval);
@@ -154,10 +156,12 @@ export class PartnerList implements OnInit, AfterViewInit {
     protected endHoldDelete(element: PartnerVView, _event: Event) {
         const id = element.id!;
         const interval = this.holdIntervals.get(id);
-        if (!interval) return;
+        if (!interval) {
+            return;
+        }
         clearInterval(interval);
         this.holdIntervals.delete(id);
-        this.progressMap[id] = 0;
+        this.progressMap.update(m => { const copy = { ...m }; copy[id] = 0; return copy; });
         this.cdr.markForCheck();
         this.snackBar.open(`Hold the Delete button for ${this.HOLD_MS/1000} second to confirm deletion.`, 'OK', { duration: 3000 });
     }

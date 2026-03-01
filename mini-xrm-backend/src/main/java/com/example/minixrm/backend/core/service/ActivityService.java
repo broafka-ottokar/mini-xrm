@@ -66,10 +66,10 @@ public class ActivityService {
 	}
 	
 	@Transactional
-	public void createOrUpdateActivity(Activity entity) {
+	public Activity createOrUpdateActivity(Activity entity) {
 		boolean update = (entity.getId() != null);
 		checkPartnerActive(entity, update);
-		activityRepository.save(entity);
+		return activityRepository.save(entity);
 	}
 
 	private void checkPartnerActive(Activity entity, boolean update) {
