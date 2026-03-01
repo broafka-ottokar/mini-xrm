@@ -26,16 +26,17 @@
 
 1. Swagger leíróból (`/mini-xrm-backend/src/main/resources/static/openapi-v1.yaml`) történik a REST API osztályainak generálása, nem pedig Java kód alapú
     - mert ebből lehetséges az Angularnak is REST API klienst generálni, nem csúszik el a backend és a frontend
-1. ilyen kis projektnél a Swagger által generált model osztályokat is lehetett volna DTO-nak használni (nem szép, de gyors és kevesebb a hibalehetőség)
-1. MapStruct által generált osztályokat érdemes lenne használni a mappeléshez, kérdés, hogy a csapatnak van-e ellenérzése (nekem is volt)
 1. Postgres-ben az activity.duration_minutes lehetett volna INTERVAL típusú (ekkor elég lett volna duration-nek nevezni), de nem álltam neki kísérletezni a 3rd party library-vel
+1. MapStruct-ot nem használtam, mert nem minden csapatnak felel meg, nem is vagyok benne gyakorlott
+1. ilyen kis projektnél a Swagger által generált model osztályokat is lehetett volna DTO-nak használni (nem szép, de gyors és kevesebb a hibalehetőség)
+     - de a technikai követelmények miatt ezt elvetettem
   
 ## Kompromisszumok időhiány miatt
 
 1. az Angular frontendnél erősen támaszkodtam a Copilot agent-re
     - mert néhány hónap kihagyás miatt kimentem a gyakorlatból
     - ez eredményezett néhány furcsaságot, pl.:
-        - manuális change detection triggerelést a paginálásnál
+        - "manuális" change detection triggerelést a paginálásnál
         - a Delete gomb long-press működése is lehetne átláthatóbb
         - a táblázat rendezésnél a mezőneveket beégette, nem a Swagger által generált enumokat használja
     - ezzel szemben a Java backend lényegében kézműves termék, ott leginkább csak Copilot kódkiegészítést használtam
