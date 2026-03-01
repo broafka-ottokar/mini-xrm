@@ -41,10 +41,12 @@
         - a táblázat rendezésnél a mezőneveket beégette, nem a Swagger által generált enumokat használja
     - ezzel szemben a Java backend lényegében kézműves termék, ott leginkább csak Copilot kódkiegészítést használtam
 1. az _tevékenység_ szerkesztő formon a partner dropdown a paginált partner listázó REST endpointból táplálkozik
+    - ami az inaktív _partnereket_ is visszaadja, ráadásul csak egy oldalnyit (200-at)
+1. lehetne több teszt
   
 ## Furcsaságok, amikre rá kellene kérdezni éles fejesztésnél
 
 1. a _partner_ _neve_ nem kötelező
-1. a _partnernek_ van "Active" státusza és "Aktív" minősítése 
+1. a _partnernek_ van "Active" státusza és "Aktív" minősítése
 1. a _tevékenység_ _típusa_ érzésre felsorolt típus kellene legyen szabad szöveges helyett
 1. a _tevékenység_ üzleti szabályai szerint a "Partner és felelős kötelező", de pl. a _tárgy_ nem, pedig logikus volna
