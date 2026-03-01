@@ -11,7 +11,7 @@
 
 ## Rövid architektúra leírás
 
-- ellenőrzés arra, hogy a rétegek megfelelően épülnek fel: /mini-xrm-backend/src/test/java/com/example/minixrm/backend/ArchUnitTest.java
+- ellenőrzés arra, hogy a rétegek megfelelően épülnek fel: `/mini-xrm-backend/src/test/java/com/example/minixrm/backend/ArchUnitTest.java`
 - a megszokott Persistence - Service - Controller/Web rétegek
 - azzal a csavarral, hogy a Controller/Web réteg a com.example.minixrm.**core.util.facade** package-et érheti csak el, nevezzük "DtoFacade" rétegnek
     - ez a "DtoFacade" réteg com.example.minixrm.**core.facade.dto**.*Dto -kra mappeli az entitásokat, tehermentesítve a Service réteget
