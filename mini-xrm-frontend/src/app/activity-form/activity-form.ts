@@ -6,6 +6,7 @@ import { MatInputModule } from '@angular/material/input';
 import { MatButtonModule } from '@angular/material/button';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { MatSelectModule } from '@angular/material/select';
+import { MatSnackBar, MatSnackBarModule } from '@angular/material/snack-bar';
 import { Router, ActivatedRoute } from '@angular/router';
 import { finalize } from 'rxjs/operators';
 
@@ -17,7 +18,7 @@ import { getLogger } from '../logging/logger';
 
 @Component({
 	selector: 'app-activity-form',
-	imports: [CommonModule, ReactiveFormsModule, MatFormFieldModule, MatInputModule, MatButtonModule, MatProgressSpinnerModule, MatSelectModule],
+	imports: [CommonModule, ReactiveFormsModule, MatFormFieldModule, MatInputModule, MatButtonModule, MatProgressSpinnerModule, MatSelectModule, MatSnackBarModule],
 	templateUrl: './activity-form.html',
 	styleUrl: './activity-form.scss',
 })
@@ -34,7 +35,8 @@ export class ActivityForm implements OnInit {
 		private partnerService: PartnerService,
 		private route: ActivatedRoute,
 		private router: Router,
-		private cdr: ChangeDetectorRef
+		private cdr: ChangeDetectorRef,
+		private snackBar: MatSnackBar
 	) {}
 
 	ngOnInit(): void {
@@ -56,7 +58,8 @@ export class ActivityForm implements OnInit {
                 	this.logger.error(() => 'Failed to load partners for activity form', err);
 				this.partners = [];
 				this.cdr.markForCheck();
-			}
+				this.snackBar.open('Failed to load partners', 'Close', { duration: 5000 });
+            	}
 		});
 
 		const idParam = this.route.snapshot.paramMap.get('id');
@@ -88,6 +91,7 @@ export class ActivityForm implements OnInit {
 				},
 				error: (err) => {
 					this.logger.error(() => 'Failed to load activity', err);
+					this.snackBar.open('Failed to load activity', 'Close', { duration: 5000 });
 				}
 			});
 	}
@@ -105,12 +109,12 @@ export class ActivityForm implements OnInit {
 			this.activityService
 				.updateActivity({ activityId: this.editingId, createOrUpdateActivityRequestView: payload })
 				.pipe(finalize(() => { this.loading = false; this.cdr.markForCheck(); }))
-				.subscribe({ next: () => this.router.navigate(['/partner-details', payload.partnerId]), error: (err) => { this.logger.error(() => 'Failed to update activity', err); } });
+				.subscribe({ next: () => { this.snackBar.open('Activity saved', 'Close', { duration: 3000 }); this.router.navigate(['/partner-details', payload.partnerId]); }, error: (err) => { this.logger.error(() => 'Failed to update activity', err); this.snackBar.open('Failed to update activity', 'Close', { duration: 5000 }); } });
 		} else {
 			this.activityService
 				.createActivity({ createOrUpdateActivityRequestView: payload })
 				.pipe(finalize(() => { this.loading = false; this.cdr.markForCheck(); }))
-				.subscribe({ next: () => this.router.navigate(['/partner-details', payload.partnerId]), error: (err) => { this.logger.error(() => 'Failed to create activity', err); } });
+				.subscribe({ next: () => { this.snackBar.open('Activity saved', 'Close', { duration: 3000 }); this.router.navigate(['/partner-details', payload.partnerId]); }, error: (err) => { this.logger.error(() => 'Failed to create activity', err); this.snackBar.open('Failed to create activity', 'Close', { duration: 5000 }); } });
 		}
 	}
 

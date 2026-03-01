@@ -7,6 +7,7 @@ import { MatButtonModule } from '@angular/material/button';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { MatSelectModule } from '@angular/material/select';
 import { Router, ActivatedRoute } from '@angular/router';
+import { MatSnackBar, MatSnackBarModule } from '@angular/material/snack-bar';
 
 import { PartnerService } from '../../../mini-xrm-client-angular/api/partner.service';
 import { PartnerTagService } from '../../../mini-xrm-client-angular/api/partnerTag.service';
@@ -15,7 +16,7 @@ import { getLogger } from '../logging/logger';
 
 @Component({
 selector: 'app-partner-form',
-	imports: [CommonModule, ReactiveFormsModule, MatFormFieldModule, MatInputModule, MatButtonModule, MatProgressSpinnerModule, MatSelectModule],
+	imports: [CommonModule, ReactiveFormsModule, MatFormFieldModule, MatInputModule, MatButtonModule, MatProgressSpinnerModule, MatSelectModule, MatSnackBarModule],
 	templateUrl: './partner-form.html',
 	styleUrl: './partner-form.scss',
 })
@@ -35,7 +36,8 @@ export class PartnerForm implements OnInit {
 		private fb: FormBuilder,
 		private route: ActivatedRoute,
 		private router: Router,
-		private cdr: ChangeDetectorRef
+		private cdr: ChangeDetectorRef,
+		private snackBar: MatSnackBar
 	) {
 		this.form = this.fb.group({
 			name: ['', Validators.maxLength(150)],
@@ -86,6 +88,7 @@ export class PartnerForm implements OnInit {
 			},
 			error: (err) => {
 				this.logger.error(() => 'Failed to load partner', err);
+				this.snackBar.open('Failed to load partner', 'OK', { duration: 5000 });
 				this.loading = false;
 				this.cdr.markForCheck();
 			}
@@ -114,12 +117,14 @@ export class PartnerForm implements OnInit {
 		obs.subscribe({
 			next: () => {
 				this.saving = false;
+				this.snackBar.open('Partner saved', 'OK', { duration: 3000 });
 				this.router.navigate(['partner-list']);
 			},
 			error: (err) => {
 				this.logger.error(() => 'Failed to save partner', err);
 				this.saving = false;
 				this.cdr.markForCheck();
+				this.snackBar.open('Failed to save partner', 'OK', { duration: 5000 });
 			}
 		});
 	}
