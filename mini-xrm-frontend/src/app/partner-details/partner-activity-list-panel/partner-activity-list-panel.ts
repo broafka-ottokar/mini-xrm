@@ -21,7 +21,7 @@ export class PartnerActivityListPanel implements OnInit, OnChanges, AfterViewIni
 
 	@Input() partnerId!: number;
 
-	protected displayedColumns = ['subject', 'type', 'durationMinutes', 'personResponsible'];
+	protected displayedColumns = ['subject', 'type', 'durationMinutes', 'personResponsible', 'actions'];
 	protected dataSource = new MatTableDataSource<ActivityView>([]);
 	protected loading = false;
 	protected totalElements = 0;
@@ -67,6 +67,17 @@ export class PartnerActivityListPanel implements OnInit, OnChanges, AfterViewIni
 
 	protected onPage(event: PageEvent) {
 		this.loadPage(this.partnerId, event.pageIndex, event.pageSize);
+	}
+
+	protected delete(element: ActivityView) {
+		this.activityService.deleteActivity({ activityId: element.id! }).subscribe({
+			next: () => {
+				this.loadPage(this.partnerId, this.paginator.pageIndex, this.paginator.pageSize);
+			},
+			error: () => {
+				alert('Failed to delete activity');
+			}
+		});
 	}
 
 }

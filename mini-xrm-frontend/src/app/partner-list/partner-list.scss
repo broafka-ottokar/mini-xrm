@@ -8,20 +8,12 @@ table {
 	white-space: nowrap;
 }
 
-.action-placeholder {
-	display: inline-block;
-	opacity: 0;
-	transition: opacity 120ms ease-in-out;
-}
-
 .action-buttons {
 	display: inline-flex;
 	gap: 8px;
 	align-items: center;
 	pointer-events: auto;
 }
-
-/* Buttons are shown by default; hover-only rules removed. */
 
 .action-btn {
 	background: transparent;

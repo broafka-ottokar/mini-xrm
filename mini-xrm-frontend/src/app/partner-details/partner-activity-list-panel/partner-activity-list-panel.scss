@@ -1,0 +1,32 @@
+table {
+	width: 100%;
+}
+
+.actions-cell {
+	width: 140px;
+	text-align: right;
+	white-space: nowrap;
+}
+
+.action-buttons {
+	display: inline-flex;
+	gap: 8px;
+	align-items: center;
+	pointer-events: auto;
+}
+
+.action-btn {
+	background: transparent;
+	border: none;
+	padding: 4px 8px;
+	cursor: pointer;
+	font-size: 13px;
+}
+
+.action-btn.delete {
+	color: #c62828;
+}
+
+.action-btn.modify {
+	color: #1565c0;
+}

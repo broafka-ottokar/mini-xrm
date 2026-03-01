@@ -1,16 +1,20 @@
 <div class="partner-details-container">
-	<div *ngIf="loading">Loading partner...</div>
-
-	<div *ngIf="!loading && partner">
-		<h2>{{ partner.name }}</h2>
-		<p><strong>Headquarters:</strong> {{ partner.headquarters }}</p>
-		<p><strong>Status:</strong> {{ statusLabel(partner.status) }}</p>
-		<p><strong>Tags:</strong>
-			<mat-chip-set>
-				<mat-chip *ngFor="let t of partner.tags">{{ t.name }}</mat-chip>
-			</mat-chip-set>
-		</p>
-	</div>
-
-	<div *ngIf="!loading && !partner">Partner not found.</div>
+	@if (loading) {
+		<div>Loading partner...</div>
+	} @else {
+		@if (partner) {
+			<div>
+				<h2>{{ partner.name }}</h2>
+				<p><strong>Headquarters:</strong> {{ partner.headquarters }}</p>
+				<p><strong>Status:</strong> {{ statusLabel(partner.status) }}</p>
+				<p><strong>Tags:</strong>
+					<mat-chip-set>
+						<mat-chip *ngFor="let t of partner.tags">{{ t.name }}</mat-chip>
+					</mat-chip-set>
+				</p>
+			</div>
+		} @else {
+			<div>Partner not found.</div>
+		}
+	}
 </div>

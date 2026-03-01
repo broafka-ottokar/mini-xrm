@@ -1,10 +1,11 @@
-<div class="menu">
+<mat-toolbar>
     <button mat-button type="button" routerLink="partner-list">Partner List</button>
     <button mat-button type="button" routerLink="report">Report</button>
     <button mat-button type="button" routerLink="partner/new">New Partner</button>
     <button mat-button type="button" routerLink="activity/new">New Activity</button>
-    <a href="http://localhost:8080/swagger-ui" target="_blank">Swagger UI</a>
-</div>
+    <span class="spacer"></span>
+    <a mat-button href="http://localhost:8080/swagger-ui" target="_blank">Swagger UI</a>
+</mat-toolbar>
 <div class="content">
     <router-outlet />
 </div>

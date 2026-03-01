@@ -1,43 +1,44 @@
 <div class="activity-form-container">
-	<mat-progress-spinner *ngIf="loading" mode="indeterminate"></mat-progress-spinner>
+	@if (loading) {
+		<mat-progress-spinner mode="indeterminate"></mat-progress-spinner>
+	} @else {
+		<form [formGroup]="form" (ngSubmit)="save()">
+			<mat-form-field appearance="fill">
+				<mat-label>Subject</mat-label>
+				<input matInput formControlName="subject" />
+			</mat-form-field>
 
-	<form [formGroup]="form" (ngSubmit)="save()" *ngIf="!loading">
-		<mat-form-field appearance="fill" style="width:100%">
-			<mat-label>Subject</mat-label>
-			<input matInput formControlName="subject" />
-		</mat-form-field>
+			<mat-form-field appearance="fill">
+				<mat-label>Type</mat-label>
+				<input matInput formControlName="type" />
+			</mat-form-field>
 
-		<mat-form-field appearance="fill" style="width:100%">
-			<mat-label>Type</mat-label>
-			<input matInput formControlName="type" />
-		</mat-form-field>
+			<mat-form-field appearance="fill">
+				<mat-label>Description</mat-label>
+				<textarea matInput formControlName="description" rows="4"></textarea>
+			</mat-form-field>
 
-		<mat-form-field appearance="fill" style="width:100%">
-			<mat-label>Description</mat-label>
-			<textarea matInput formControlName="description" rows="4"></textarea>
-		</mat-form-field>
+			<mat-form-field appearance="fill">
+				<mat-label>Duration (minutes)</mat-label>
+				<input matInput type="number" formControlName="durationMinutes" />
+			</mat-form-field>
 
-		<mat-form-field appearance="fill">
-			<mat-label>Duration (minutes)</mat-label>
-			<input matInput type="number" formControlName="durationMinutes" />
-		</mat-form-field>
+			<mat-form-field appearance="fill">
+				<mat-label>Person Responsible</mat-label>
+				<input matInput formControlName="personResponsible" />
+			</mat-form-field>
 
-		<mat-form-field appearance="fill" style="width:100%">
-			<mat-label>Person Responsible</mat-label>
-			<input matInput formControlName="personResponsible" />
-		</mat-form-field>
+			<mat-form-field appearance="fill">
+				<mat-label>Partner</mat-label>
+				<mat-select formControlName="partnerId">
+					<mat-option *ngFor="let p of partners" [value]="p.id">{{ p.name }}</mat-option>
+				</mat-select>
+			</mat-form-field>
 
-		<mat-form-field appearance="fill">
-			<mat-label>Partner</mat-label>
-			<mat-select formControlName="partnerId">
-				<mat-option *ngFor="let p of partners" [value]="p.id">{{ p.name }}</mat-option>
-			</mat-select>
-		</mat-form-field>
-
-		<div style="margin-top:16px">
-			<button mat-raised-button color="primary" type="submit">Save</button>
-			<button mat-button type="button" (click)="cancel()">Cancel</button>
-		</div>
-	</form>
-
+			<div style="margin-top:16px">
+				<button mat-raised-button color="primary" type="submit">Save</button>
+				<button mat-button type="button" (click)="cancel()">Cancel</button>
+			</div>
+		</form>
+	}
 </div>
