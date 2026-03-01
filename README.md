@@ -30,7 +30,7 @@
 1. MapStruct által generált osztályokat érdemes lenne használni a mappeléshez, kérdés, hogy a csapatnak van-e ellenérzése (nekem is volt)
 1. Postgres-ben az activity.duration_minutes lehetett volna INTERVAL típusú (ekkor elég lett volna duration-nek nevezni), de nem álltam neki kísérletezni a 3rd party library-vel
   
-## milyen kompromisszumokat hoztál időhiány miatt
+## Kompromisszumok időhiány miatt
 
 1. az Angular frontendnél erősen támaszkodtam a Copilot agent-re
     - mert néhány hónap kihagyás miatt kimentem a gyakorlatból
