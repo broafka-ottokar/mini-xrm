@@ -1,6 +1,6 @@
 import { Component, OnInit, ChangeDetectorRef, signal, WritableSignal } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { ReactiveFormsModule, FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { ReactiveFormsModule, FormBuilder, FormGroup, Validators, ValidatorFn, AbstractControl } from '@angular/forms';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { MatButtonModule } from '@angular/material/button';
@@ -47,12 +47,13 @@ export class ActivityForm implements OnInit {
 			description: ['', Validators.maxLength(100_000)],
 			durationMinutes: [0, [Validators.required, Validators.min(1)]],
 			personResponsible: ['', [Validators.required, Validators.maxLength(150)]],
-			partnerId: [null, Validators.required],
+			partnerId: [null, [Validators.required, this.partnerActiveValidator()]],
 		});
 
 		this.partnerService.searchPartners({ page: 0, pageSize: 200 }).subscribe({
 			next: (res) => {
 				this.partners = res.content ?? [];
+				this.form.get('partnerId')?.updateValueAndValidity();
 				this.cdr.markForCheck();
 			},
 			error: (err) => {
@@ -89,6 +90,8 @@ export class ActivityForm implements OnInit {
 						personResponsible: a.personResponsible,
 						partnerId: a.partnerId,
 					});
+					// Re-run partner validation now that we set the value from the loaded activity
+					this.form.get('partnerId')?.updateValueAndValidity();
 				},
 				error: (err) => {
 					this.handleActivityLoadError(err);
@@ -167,6 +170,25 @@ export class ActivityForm implements OnInit {
 		} else {
 			this.router.navigate(['/']);
 		}
+	}
+
+	protected partnerActiveValidator(): ValidatorFn {
+		return (control: AbstractControl) => {
+			if (this.editingId) {
+				return null;
+			} else {
+				const id = control.value;
+				if (id === null || id === undefined) {
+					return null;
+				}
+				const pid = Number(id);
+				const p = this.partners.find(x => (x.id === pid));
+				if (!p) {
+					return null;
+				}
+				return String(p.status).toUpperCase() === 'INACTIVE' ? { inactivePartner: true } : null;
+			}
+		};
 	}
 
 }

@@ -33,6 +33,7 @@
 				<mat-select formControlName="partnerId">
 					<mat-option *ngFor="let p of partners" [value]="p.id">{{ p.name }}</mat-option>
 				</mat-select>
+				<mat-error *ngIf="form.get('partnerId')?.hasError('inactivePartner')">Selected partner is inactive</mat-error>
 			</mat-form-field>
 
 			<div style="margin-top:16px">
