@@ -8,10 +8,10 @@ import { PartnerForm } from './partner-form/partner-form';
 export const routes: Routes = [
 	{ path: 'partner-list', component: PartnerList },
 	{ path: 'partner-details/:id', component: PartnerDetails },
-    { path: 'partner/new', component: PartnerForm },
-    { path: 'partner/:id', component: PartnerForm },
-    { path: 'activity/new', component: ActivityForm },
-    { path: 'activity/:id', component: ActivityForm },
-    { path: 'report', component: PersonResponsibleReport },
-    { path: '', redirectTo: 'partner-list', pathMatch: 'full' },
+	{ path: 'partner/new', component: PartnerForm },
+	{ path: 'partner/:id', component: PartnerForm },
+	{ path: 'activity/new', component: ActivityForm },
+	{ path: 'activity/:id', component: ActivityForm },
+	{ path: 'report', component: PersonResponsibleReport },
+	{ path: '', redirectTo: 'partner-list', pathMatch: 'full' },
 ];
