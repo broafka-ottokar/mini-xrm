@@ -1,6 +1,4 @@
 spring:
-  config:
-    import: 'optional:classpath:application-resilience4j.yml'
   datasource:
     url: jdbc:postgresql://localhost:5432/miniXrm
     username: miniXrm

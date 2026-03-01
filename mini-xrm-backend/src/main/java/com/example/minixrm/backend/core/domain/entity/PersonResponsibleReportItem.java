@@ -6,7 +6,7 @@ import jakarta.persistence.Id;
 import jakarta.persistence.Table;
 
 @Entity
-@Table(name = "person_responsible_report")
+@Table(name = "person_responsible_report_v")
 public class PersonResponsibleReportItem {
 	
 	@Id

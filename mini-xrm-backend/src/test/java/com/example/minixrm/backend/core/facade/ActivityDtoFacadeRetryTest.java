@@ -23,11 +23,10 @@ import com.example.minixrm.backend.core.domain.entity.Activity;
 import com.example.minixrm.backend.core.domain.entity.Partner;
 import com.example.minixrm.backend.core.domain.entity.PartnerStatus;
 import com.example.minixrm.backend.core.facade.dto.CreateOrUpdateActivityDto;
-import com.example.minixrm.backend.core.facade.util.ApplicationException;
-import com.example.minixrm.backend.core.facade.util.ErrorCode;
 import com.example.minixrm.backend.core.repository.ActivityJpaRepository;
 import com.example.minixrm.backend.core.repository.PartnerJpaRepository;
 import com.example.minixrm.backend.core.repository.PartnerTagJpaRepository;
+import com.example.minixrm.backend.core.repository.PartnerVJpaRepository;
 import com.example.minixrm.backend.core.repository.PersonResponsibleReportJpaRepository;
 
 @SpringBootTest
@@ -43,6 +42,9 @@ public class ActivityDtoFacadeRetryTest {
 
 	@MockBean
 	private PartnerJpaRepository partnerRepository;
+	
+	@MockBean
+	private PartnerVJpaRepository partnerVRepository;
 	
 	@MockBean
 	private PartnerTagJpaRepository partnerTagRepository;
@@ -105,8 +107,8 @@ public class ActivityDtoFacadeRetryTest {
 
 		try {
 			activityDtoFacade.createOrUpdateActivity(null, dto);
-		} catch (ApplicationException ex) {
-			assertEquals(ErrorCode.CONCURRENT_MODIFICATION, ex.getErrorCode());
+		} catch (OptimisticLockingFailureException ex) {
+			assertEquals("optimistic lock failure test 3", ex.getMessage());
 		} finally {
 			verify(activityRepository, times(3)).save(any(Activity.class));
 		}

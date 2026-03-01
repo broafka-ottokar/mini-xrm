@@ -7,10 +7,10 @@
  * https://openapi-generator.tech
  * Do not edit the class manually.
  */
-import { PartnerView } from './partnerView';
+import { PartnerVView } from './partnerVView';
 
 
-export interface PartnerPageView { 
+export interface PartnerVPageView { 
     totalElements: number;
     totalPages: number;
     /**
@@ -18,6 +18,6 @@ export interface PartnerPageView {
      */
     currentPage: number;
     pageSize: number;
-    content: Array<PartnerView>;
+    content: Array<PartnerVView>;
 }
 

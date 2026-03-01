@@ -2,7 +2,7 @@ package com.example.minixrm.backend.web.openapi.v1.model;
 
 import java.net.URI;
 import java.util.Objects;
-import com.example.minixrm.backend.web.openapi.v1.model.PartnerView;
+import com.example.minixrm.backend.web.openapi.v1.model.PartnerVView;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonCreator;
 import java.util.ArrayList;
@@ -20,11 +20,11 @@ import java.util.*;
 import jakarta.annotation.Generated;
 
 /**
- * PartnerPageView
+ * PartnerVPageView
  */
 
 @Generated(value = "org.openapitools.codegen.languages.SpringCodegen", comments = "Generator version: 7.19.0")
-public class PartnerPageView implements Serializable {
+public class PartnerVPageView implements Serializable {
 
   private static final long serialVersionUID = 1L;
 
@@ -37,16 +37,16 @@ public class PartnerPageView implements Serializable {
   private Integer pageSize;
 
   @Valid
-  private List<@Valid PartnerView> content = new ArrayList<>();
+  private List<@Valid PartnerVView> content = new ArrayList<>();
 
-  public PartnerPageView() {
+  public PartnerVPageView() {
     super();
   }
 
   /**
    * Constructor with only required parameters
    */
-  public PartnerPageView(Long totalElements, Integer totalPages, Integer currentPage, Integer pageSize, List<@Valid PartnerView> content) {
+  public PartnerVPageView(Long totalElements, Integer totalPages, Integer currentPage, Integer pageSize, List<@Valid PartnerVView> content) {
     this.totalElements = totalElements;
     this.totalPages = totalPages;
     this.currentPage = currentPage;
@@ -54,7 +54,7 @@ public class PartnerPageView implements Serializable {
     this.content = content;
   }
 
-  public PartnerPageView totalElements(Long totalElements) {
+  public PartnerVPageView totalElements(Long totalElements) {
     this.totalElements = totalElements;
     return this;
   }
@@ -74,7 +74,7 @@ public class PartnerPageView implements Serializable {
     this.totalElements = totalElements;
   }
 
-  public PartnerPageView totalPages(Integer totalPages) {
+  public PartnerVPageView totalPages(Integer totalPages) {
     this.totalPages = totalPages;
     return this;
   }
@@ -94,7 +94,7 @@ public class PartnerPageView implements Serializable {
     this.totalPages = totalPages;
   }
 
-  public PartnerPageView currentPage(Integer currentPage) {
+  public PartnerVPageView currentPage(Integer currentPage) {
     this.currentPage = currentPage;
     return this;
   }
@@ -114,7 +114,7 @@ public class PartnerPageView implements Serializable {
     this.currentPage = currentPage;
   }
 
-  public PartnerPageView pageSize(Integer pageSize) {
+  public PartnerVPageView pageSize(Integer pageSize) {
     this.pageSize = pageSize;
     return this;
   }
@@ -134,12 +134,12 @@ public class PartnerPageView implements Serializable {
     this.pageSize = pageSize;
   }
 
-  public PartnerPageView content(List<@Valid PartnerView> content) {
+  public PartnerVPageView content(List<@Valid PartnerVView> content) {
     this.content = content;
     return this;
   }
 
-  public PartnerPageView addContentItem(PartnerView contentItem) {
+  public PartnerVPageView addContentItem(PartnerVView contentItem) {
     if (this.content == null) {
       this.content = new ArrayList<>();
     }
@@ -153,11 +153,11 @@ public class PartnerPageView implements Serializable {
    */
   @NotNull @Valid 
   @JsonProperty("content")
-  public List<@Valid PartnerView> getContent() {
+  public List<@Valid PartnerVView> getContent() {
     return content;
   }
 
-  public void setContent(List<@Valid PartnerView> content) {
+  public void setContent(List<@Valid PartnerVView> content) {
     this.content = content;
   }
 
@@ -169,12 +169,12 @@ public class PartnerPageView implements Serializable {
     if (o == null || getClass() != o.getClass()) {
       return false;
     }
-    PartnerPageView partnerPageView = (PartnerPageView) o;
-    return Objects.equals(this.totalElements, partnerPageView.totalElements) &&
-        Objects.equals(this.totalPages, partnerPageView.totalPages) &&
-        Objects.equals(this.currentPage, partnerPageView.currentPage) &&
-        Objects.equals(this.pageSize, partnerPageView.pageSize) &&
-        Objects.equals(this.content, partnerPageView.content);
+    PartnerVPageView partnerVPageView = (PartnerVPageView) o;
+    return Objects.equals(this.totalElements, partnerVPageView.totalElements) &&
+        Objects.equals(this.totalPages, partnerVPageView.totalPages) &&
+        Objects.equals(this.currentPage, partnerVPageView.currentPage) &&
+        Objects.equals(this.pageSize, partnerVPageView.pageSize) &&
+        Objects.equals(this.content, partnerVPageView.content);
   }
 
   @Override
@@ -185,7 +185,7 @@ public class PartnerPageView implements Serializable {
   @Override
   public String toString() {
     StringBuilder sb = new StringBuilder();
-    sb.append("class PartnerPageView {\n");
+    sb.append("class PartnerVPageView {\n");
     sb.append("    totalElements: ").append(toIndentedString(totalElements)).append("\n");
     sb.append("    totalPages: ").append(toIndentedString(totalPages)).append("\n");
     sb.append("    currentPage: ").append(toIndentedString(currentPage)).append("\n");

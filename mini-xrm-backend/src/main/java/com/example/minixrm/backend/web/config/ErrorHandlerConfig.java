@@ -3,6 +3,7 @@ package com.example.minixrm.backend.web.config;
 import org.hibernate.exception.ConstraintViolationException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.dao.OptimisticLockingFailureException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.http.converter.HttpMessageNotReadableException;
@@ -20,6 +21,14 @@ import com.example.minixrm.backend.web.openapi.v1.model.ErrorResponseView;
 public class ErrorHandlerConfig {
 	
 	private final Logger logger = LoggerFactory.getLogger(ErrorHandlerConfig.class);
+	
+	@ExceptionHandler(OptimisticLockingFailureException.class)
+	public ResponseEntity<ErrorResponseView> handleOptimisticLockingFailure(OptimisticLockingFailureException ex) {
+		logger.info("Optimistic locking failure", ex);
+		ErrorCode errorCode = ErrorCode.CONCURRENT_MODIFICATION;
+		ErrorResponseView ErrorResponseView = createErrorResponseView(errorCode, "Optimistic locking failure", ex);
+		return ResponseEntity.status(errorCode.getHttpStatus()).body(ErrorResponseView);
+	}
 	
 	@ExceptionHandler(HttpMessageNotReadableException.class)
 	public ResponseEntity<ErrorResponseView> handleHttpMessageNotReadable(HttpMessageNotReadableException ex) {

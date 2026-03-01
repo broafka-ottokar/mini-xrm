@@ -22,11 +22,10 @@ import org.springframework.test.context.ActiveProfiles;
 import com.example.minixrm.backend.core.domain.entity.Partner;
 import com.example.minixrm.backend.core.facade.dto.CreateOrUpdatePartnerDto;
 import com.example.minixrm.backend.core.facade.dto.PartnerStatusDto;
-import com.example.minixrm.backend.core.facade.util.ApplicationException;
-import com.example.minixrm.backend.core.facade.util.ErrorCode;
 import com.example.minixrm.backend.core.repository.ActivityJpaRepository;
 import com.example.minixrm.backend.core.repository.PartnerJpaRepository;
 import com.example.minixrm.backend.core.repository.PartnerTagJpaRepository;
+import com.example.minixrm.backend.core.repository.PartnerVJpaRepository;
 import com.example.minixrm.backend.core.repository.PersonResponsibleReportJpaRepository;
 
 @SpringBootTest
@@ -42,6 +41,9 @@ public class PartnerDtoFacadeRetryTest {
 
 	@MockBean
 	private PartnerJpaRepository partnerRepository;
+	
+	@MockBean
+	private PartnerVJpaRepository partnerVRepository;
 
 	@MockBean
 	private PartnerTagJpaRepository partnerTagRepository;
@@ -106,8 +108,8 @@ public class PartnerDtoFacadeRetryTest {
 		
 		try {
 			partnerDtoFacade.createOrUpdate(dto, partnerId);
-		} catch (ApplicationException ex) {
-			assertEquals(ErrorCode.CONCURRENT_MODIFICATION, ex.getErrorCode());
+		} catch (OptimisticLockingFailureException ex) {
+			assertEquals("optimistic lock failure test 3", ex.getMessage());
 		} finally {
 			verify(partnerRepository, times(3)).save(partner);
 		}

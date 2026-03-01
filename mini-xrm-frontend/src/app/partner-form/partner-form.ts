@@ -11,6 +11,7 @@ import { Router, ActivatedRoute } from '@angular/router';
 import { PartnerService } from '../../../mini-xrm-client-angular/api/partner.service';
 import { PartnerTagService } from '../../../mini-xrm-client-angular/api/partnerTag.service';
 import { CreateOrUpdatePartnerRequestView } from '../../../mini-xrm-client-angular/model/createOrUpdatePartnerRequestView';
+import { getLogger } from '../logging/logger';
 
 @Component({
 selector: 'app-partner-form',
@@ -19,6 +20,8 @@ selector: 'app-partner-form',
 	styleUrl: './partner-form.scss',
 })
 export class PartnerForm implements OnInit {
+
+	private readonly logger = getLogger('component.PartnerForm');
 
 	form: FormGroup;
 	loading = false;
@@ -59,7 +62,8 @@ export class PartnerForm implements OnInit {
 				this.tags = (res && res.content) || [];
 				this.cdr.markForCheck();
 			},
-			error: () => {
+			error: (err) => {
+				this.logger.error(() => 'Failed to load partner tags', err);
 				this.tags = [];
 				this.cdr.markForCheck();
 			}
@@ -80,7 +84,8 @@ export class PartnerForm implements OnInit {
 				this.loading = false;
 				this.cdr.markForCheck();
 			},
-			error: () => {
+			error: (err) => {
+				this.logger.error(() => 'Failed to load partner', err);
 				this.loading = false;
 				this.cdr.markForCheck();
 			}
@@ -111,7 +116,8 @@ export class PartnerForm implements OnInit {
 				this.saving = false;
 				this.router.navigate(['partner-list']);
 			},
-			error: () => {
+			error: (err) => {
+				this.logger.error(() => 'Failed to save partner', err);
 				this.saving = false;
 				this.cdr.markForCheck();
 			}

@@ -6,6 +6,7 @@ import { finalize } from 'rxjs/operators';
 import { PartnerService } from '../../../../mini-xrm-client-angular/api/partner.service';
 import { PartnerView } from '../../../../mini-xrm-client-angular/model/partnerView';
 import { PartnerStatusView } from '../../../../mini-xrm-client-angular/model/partnerStatusView';
+import { getLogger } from '../../logging/logger';
 
 @Component({
 	selector: 'app-partner-details-panel',
@@ -14,6 +15,8 @@ import { PartnerStatusView } from '../../../../mini-xrm-client-angular/model/par
 	styleUrl: './partner-details-panel.scss',
 })
 export class PartnerDetailsPanel implements OnInit {
+
+	private readonly logger = getLogger('component.PartnerDetailsPanel');
 
 	@Input() partnerId!: number;
 
@@ -36,7 +39,8 @@ export class PartnerDetailsPanel implements OnInit {
 			}))
 			.subscribe({
 				next: (p) => (this.partner = p),
-				error: () => {
+				error: (err) => {
+					this.logger.error(() => 'Failed to load partner details', err);
 					this.partner = undefined;
 				},
 			});

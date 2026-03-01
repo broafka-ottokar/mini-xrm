@@ -21,9 +21,13 @@ import { CreateOrUpdatePartnerRequestView } from '../model/createOrUpdatePartner
 // @ts-ignore
 import { ErrorResponseView } from '../model/errorResponseView';
 // @ts-ignore
-import { PartnerPageView } from '../model/partnerPageView';
+import { PartnerVPageView } from '../model/partnerVPageView';
+// @ts-ignore
+import { PartnerVSortFieldView } from '../model/partnerVSortFieldView';
 // @ts-ignore
 import { PartnerView } from '../model/partnerView';
+// @ts-ignore
+import { SortDirectionView } from '../model/sortDirectionView';
 
 // @ts-ignore
 import { BASE_PATH, COLLECTION_FORMATS }                     from '../variables';
@@ -52,6 +56,8 @@ export interface SearchPartnersRequestParams {
     pageSize: number;
     /** The ID of the partner tag to filter by */
     partnerTagId?: number;
+    sortField?: PartnerVSortFieldView;
+    sortDirection?: SortDirectionView;
 }
 
 export interface UpdatePartnerRequestParams {
@@ -259,9 +265,9 @@ export class PartnerService extends BaseService {
      * @param reportProgress flag to report request and response progress.
      * @param options additional options
      */
-    public searchPartners(requestParameters: SearchPartnersRequestParams, observe?: 'body', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<PartnerPageView>;
-    public searchPartners(requestParameters: SearchPartnersRequestParams, observe?: 'response', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<HttpResponse<PartnerPageView>>;
-    public searchPartners(requestParameters: SearchPartnersRequestParams, observe?: 'events', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<HttpEvent<PartnerPageView>>;
+    public searchPartners(requestParameters: SearchPartnersRequestParams, observe?: 'body', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<PartnerVPageView>;
+    public searchPartners(requestParameters: SearchPartnersRequestParams, observe?: 'response', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<HttpResponse<PartnerVPageView>>;
+    public searchPartners(requestParameters: SearchPartnersRequestParams, observe?: 'events', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<HttpEvent<PartnerVPageView>>;
     public searchPartners(requestParameters: SearchPartnersRequestParams, observe: any = 'body', reportProgress: boolean = false, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<any> {
         const page = requestParameters?.page;
         if (page === null || page === undefined) {
@@ -272,6 +278,8 @@ export class PartnerService extends BaseService {
             throw new Error('Required parameter pageSize was null or undefined when calling searchPartners.');
         }
         const partnerTagId = requestParameters?.partnerTagId;
+        const sortField = requestParameters?.sortField;
+        const sortDirection = requestParameters?.sortDirection;
 
         let localVarQueryParameters = new OpenApiHttpParams(this.encoder);
 
@@ -297,6 +305,24 @@ export class PartnerService extends BaseService {
             localVarQueryParameters,
             'pageSize',
             <any>pageSize,
+            QueryParamStyle.Form,
+            true,
+        );
+
+
+        localVarQueryParameters = this.addToHttpParams(
+            localVarQueryParameters,
+            'sortField',
+            <any>sortField,
+            QueryParamStyle.Form,
+            true,
+        );
+
+
+        localVarQueryParameters = this.addToHttpParams(
+            localVarQueryParameters,
+            'sortDirection',
+            <any>sortDirection,
             QueryParamStyle.Form,
             true,
         );
@@ -329,7 +355,7 @@ export class PartnerService extends BaseService {
 
         let localVarPath = `/v1/partners`;
         const { basePath, withCredentials } = this.configuration;
-        return this.httpClient.request<PartnerPageView>('get', `${basePath}${localVarPath}`,
+        return this.httpClient.request<PartnerVPageView>('get', `${basePath}${localVarPath}`,
             {
                 context: localVarHttpContext,
                 params: localVarQueryParameters.toHttpParams(),

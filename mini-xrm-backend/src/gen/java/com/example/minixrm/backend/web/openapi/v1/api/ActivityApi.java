@@ -6,9 +6,12 @@
 package com.example.minixrm.backend.web.openapi.v1.api;
 
 import com.example.minixrm.backend.web.openapi.v1.model.ActivityPageView;
+import com.example.minixrm.backend.web.openapi.v1.model.ActivitySortFieldView;
 import com.example.minixrm.backend.web.openapi.v1.model.ActivityView;
 import com.example.minixrm.backend.web.openapi.v1.model.CreateOrUpdateActivityRequestView;
 import com.example.minixrm.backend.web.openapi.v1.model.ErrorResponseView;
+import org.springframework.lang.Nullable;
+import com.example.minixrm.backend.web.openapi.v1.model.SortDirectionView;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.stereotype.Controller;
@@ -78,6 +81,8 @@ public interface ActivityApi {
      * @param partnerId The ID of the partner (required)
      * @param page The page number to retrieve (0-based) (required)
      * @param pageSize The number of items per page (required)
+     * @param sortField  (optional)
+     * @param sortDirection  (optional)
      * @return Successful response (status code 200)
      *         or Bad Request, e.g. validation failed for the request body or parameters (status code 400)
      *         or Not Found, e.g. trying to retrieve, update or delete an entity by an ID in the path does not exist (status code 404)
@@ -91,7 +96,9 @@ public interface ActivityApi {
     ResponseEntity<ActivityPageView> listActivitiesByPartnerId(
         @NotNull @Min(value = 1L) @Max(value = 9223372036854775807L)  @PathVariable("partnerId") Long partnerId,
         @NotNull @Min(value = 0)  @Valid @RequestParam(value = "page", required = true) Integer page,
-        @NotNull @Min(value = 1)  @Valid @RequestParam(value = "pageSize", required = true) Integer pageSize
+        @NotNull @Min(value = 1)  @Valid @RequestParam(value = "pageSize", required = true) Integer pageSize,
+         @Valid @RequestParam(value = "sortField", required = false) @Nullable ActivitySortFieldView sortField,
+         @Valid @RequestParam(value = "sortDirection", required = false) @Nullable SortDirectionView sortDirection
     );
 
 

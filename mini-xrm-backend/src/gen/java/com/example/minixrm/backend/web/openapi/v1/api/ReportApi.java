@@ -6,7 +6,10 @@
 package com.example.minixrm.backend.web.openapi.v1.api;
 
 import com.example.minixrm.backend.web.openapi.v1.model.ErrorResponseView;
+import org.springframework.lang.Nullable;
 import com.example.minixrm.backend.web.openapi.v1.model.PersonResponsibleReportPageView;
+import com.example.minixrm.backend.web.openapi.v1.model.PersonResponsibleReportSortFieldView;
+import com.example.minixrm.backend.web.openapi.v1.model.SortDirectionView;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.stereotype.Controller;
@@ -31,6 +34,8 @@ public interface ReportApi {
      *
      * @param page The page number to retrieve (0-based) (required)
      * @param pageSize The number of items per page (required)
+     * @param sortField  (optional)
+     * @param sortDirection  (optional)
      * @return Successful response (status code 200)
      *         or Bad Request, e.g. validation failed for the request body or parameters (status code 400)
      *         or Internal Server Error (status code 500)
@@ -42,7 +47,9 @@ public interface ReportApi {
     )
     ResponseEntity<PersonResponsibleReportPageView> reportPersonResponsible(
         @NotNull @Min(value = 0)  @Valid @RequestParam(value = "page", required = true) Integer page,
-        @NotNull @Min(value = 1)  @Valid @RequestParam(value = "pageSize", required = true) Integer pageSize
+        @NotNull @Min(value = 1)  @Valid @RequestParam(value = "pageSize", required = true) Integer pageSize,
+         @Valid @RequestParam(value = "sortField", required = false) @Nullable PersonResponsibleReportSortFieldView sortField,
+         @Valid @RequestParam(value = "sortDirection", required = false) @Nullable SortDirectionView sortDirection
     );
 
 }

@@ -4,9 +4,7 @@ import org.springframework.stereotype.Component;
 
 import com.example.minixrm.backend.core.facade.dto.CreateOrUpdatePartnerDto;
 import com.example.minixrm.backend.core.facade.dto.PartnerDto;
-import com.example.minixrm.backend.core.facade.dto.PartnerPageDto;
 import com.example.minixrm.backend.web.openapi.v1.model.CreateOrUpdatePartnerRequestView;
-import com.example.minixrm.backend.web.openapi.v1.model.PartnerPageView;
 import com.example.minixrm.backend.web.openapi.v1.model.PartnerView;
 
 @Component
@@ -51,14 +49,4 @@ public class PartnerViewMapper {
 		
 	}
 
-	public PartnerPageView toView(PartnerPageDto searchPartners) {
-		return new PartnerPageView(
-				searchPartners.getTotalElements(),
-				searchPartners.getTotalPages(),
-				searchPartners.getCurrentPage(),
-				searchPartners.getPageSize(),
-				searchPartners.getContent().stream().map(this::toView).toList()
-		);
-	}
-	
 }

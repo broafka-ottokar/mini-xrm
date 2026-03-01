@@ -12,5 +12,13 @@
     <changeSet id="2-seed-data" author="migration">
         <sqlFile path="db/migration/2_seed_data.sql" relativeToChangelogFile="false" splitStatements="true" stripComments="true" />
     </changeSet>
-
+    
+    <changeSet id="3-more-seed-data" author="migration">
+        <sqlFile path="db/migration/3_more_seed_data.sql" relativeToChangelogFile="false" splitStatements="true" stripComments="true" />
+    </changeSet>
+    
+    <changeSet id="4-create-views" author="migration">
+        <sqlFile path="db/migration/4_create_views.sql" relativeToChangelogFile="false" splitStatements="true" stripComments="true" />
+    </changeSet>
+    
 </databaseChangeLog>

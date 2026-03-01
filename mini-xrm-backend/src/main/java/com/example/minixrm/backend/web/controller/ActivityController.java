@@ -1,6 +1,7 @@
 package com.example.minixrm.backend.web.controller;
 
 import org.springframework.http.ResponseEntity;
+import org.springframework.lang.Nullable;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -10,8 +11,10 @@ import org.springframework.web.bind.annotation.RequestParam;
 import com.example.minixrm.backend.web.facade.ActivityViewFacade;
 import com.example.minixrm.backend.web.openapi.v1.api.ActivityApi;
 import com.example.minixrm.backend.web.openapi.v1.model.ActivityPageView;
+import com.example.minixrm.backend.web.openapi.v1.model.ActivitySortFieldView;
 import com.example.minixrm.backend.web.openapi.v1.model.ActivityView;
 import com.example.minixrm.backend.web.openapi.v1.model.CreateOrUpdateActivityRequestView;
+import com.example.minixrm.backend.web.openapi.v1.model.SortDirectionView;
 
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.Max;
@@ -60,11 +63,13 @@ public class ActivityController implements ActivityApi {
 			produces = { "application/json" }
 	)
 	public ResponseEntity<ActivityPageView> listActivitiesByPartnerId(
-		@NotNull @Min(value = 1L) @Max(value = 9223372036854775807L)  @PathVariable("partnerId") Long partnerId,
-		@NotNull @Min(value = 0)  @Valid @RequestParam(value = "page", required = true) Integer page,
-		@NotNull @Min(value = 1)  @Valid @RequestParam(value = "pageSize", required = true) Integer pageSize
+	        @NotNull @Min(value = 1L) @Max(value = 9223372036854775807L)  @PathVariable("partnerId") Long partnerId,
+	        @NotNull @Min(value = 0)  @Valid @RequestParam(value = "page", required = true) Integer page,
+	        @NotNull @Min(value = 1)  @Valid @RequestParam(value = "pageSize", required = true) Integer pageSize,
+	        @Valid @RequestParam(value = "sortField", required = false) @Nullable ActivitySortFieldView sortField,
+	        @Valid @RequestParam(value = "sortDirection", required = false) @Nullable SortDirectionView sortDirection
 	) {
-		ActivityPageView view = facade.findActivitiesByPartner(partnerId, page, pageSize);
+		ActivityPageView view = facade.findActivitiesByPartner(partnerId, page, pageSize, sortField, sortDirection);
 		return ResponseEntity.ok(view);
 	}
 
@@ -84,11 +89,11 @@ public class ActivityController implements ActivityApi {
 	}
 
 	@Override
-    @RequestMapping(
+	@RequestMapping(
 	        method = RequestMethod.GET,
 	        value = ActivityApi.PATH_LOAD_ACTIVITY,
 	        produces = { "application/json" }
-    )
+	)
 	public ResponseEntity<ActivityView> loadActivity(@NotNull @Min(1) @Max(9223372036854775807L) Long activityId) {
 		return ResponseEntity.ok(facade.getActivityById(activityId));
 	}

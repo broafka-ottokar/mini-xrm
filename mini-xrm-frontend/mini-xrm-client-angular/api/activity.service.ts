@@ -19,11 +19,15 @@ import { OpenApiHttpParams, QueryParamStyle } from '../query.params';
 // @ts-ignore
 import { ActivityPageView } from '../model/activityPageView';
 // @ts-ignore
+import { ActivitySortFieldView } from '../model/activitySortFieldView';
+// @ts-ignore
 import { ActivityView } from '../model/activityView';
 // @ts-ignore
 import { CreateOrUpdateActivityRequestView } from '../model/createOrUpdateActivityRequestView';
 // @ts-ignore
 import { ErrorResponseView } from '../model/errorResponseView';
+// @ts-ignore
+import { SortDirectionView } from '../model/sortDirectionView';
 
 // @ts-ignore
 import { BASE_PATH, COLLECTION_FORMATS }                     from '../variables';
@@ -47,6 +51,8 @@ export interface ListActivitiesByPartnerIdRequestParams {
     page: number;
     /** The number of items per page */
     pageSize: number;
+    sortField?: ActivitySortFieldView;
+    sortDirection?: SortDirectionView;
 }
 
 export interface LoadActivityRequestParams {
@@ -218,6 +224,8 @@ export class ActivityService extends BaseService {
         if (pageSize === null || pageSize === undefined) {
             throw new Error('Required parameter pageSize was null or undefined when calling listActivitiesByPartnerId.');
         }
+        const sortField = requestParameters?.sortField;
+        const sortDirection = requestParameters?.sortDirection;
 
         let localVarQueryParameters = new OpenApiHttpParams(this.encoder);
 
@@ -234,6 +242,24 @@ export class ActivityService extends BaseService {
             localVarQueryParameters,
             'pageSize',
             <any>pageSize,
+            QueryParamStyle.Form,
+            true,
+        );
+
+
+        localVarQueryParameters = this.addToHttpParams(
+            localVarQueryParameters,
+            'sortField',
+            <any>sortField,
+            QueryParamStyle.Form,
+            true,
+        );
+
+
+        localVarQueryParameters = this.addToHttpParams(
+            localVarQueryParameters,
+            'sortDirection',
+            <any>sortDirection,
             QueryParamStyle.Form,
             true,
         );

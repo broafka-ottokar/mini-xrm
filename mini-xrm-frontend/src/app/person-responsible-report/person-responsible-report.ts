@@ -8,6 +8,9 @@ import { MatTableDataSource } from '@angular/material/table';
 import { finalize } from 'rxjs/operators';
 import { ReportService } from '../../../mini-xrm-client-angular/api/report.service';
 import { PersonResponsibleReportItemView } from '../../../mini-xrm-client-angular/model/personResponsibleReportItemView';
+import { PersonResponsibleReportSortFieldView } from '../../../mini-xrm-client-angular/model/personResponsibleReportSortFieldView';
+import { SortDirectionView } from '../../../mini-xrm-client-angular/model/sortDirectionView';
+import { getLogger } from '../logging/logger';
 
 @Component({
 	selector: 'app-person-responsible-report',
@@ -17,11 +20,17 @@ import { PersonResponsibleReportItemView } from '../../../mini-xrm-client-angula
 })
 export class PersonResponsibleReport implements OnInit, AfterViewInit {
 
+	private readonly logger = getLogger('component.PersonResponsibleReport');
+
 	protected displayedColumns = ['personResponsible', 'totalDurationMinutes', 'partnerCount'];
 	protected dataSource = new MatTableDataSource<PersonResponsibleReportItemView>([]);
 	protected loading = false;
 	protected totalElements = 0;
 	protected pageSize = 10;
+    protected pageIndex = 0;
+
+	protected sortField: PersonResponsibleReportSortFieldView | null = null;
+	protected sortDirection: SortDirectionView | null = null;
 
 	@ViewChild(MatPaginator) paginator!: MatPaginator;
 
@@ -32,13 +41,17 @@ export class PersonResponsibleReport implements OnInit, AfterViewInit {
 	}
 
 	ngAfterViewInit(): void {
-		this.dataSource.paginator = this.paginator;
 	}
 
 	protected loadPage(page: number, pageSize: number) {
 		this.loading = true;
+		this.pageIndex = page;
+		const params: any = { page, pageSize };
+		if (this.sortField) params.sortField = this.sortField;
+		if (this.sortDirection) params.sortDirection = this.sortDirection;
+
 		this.reportService
-			.reportPersonResponsible({ page, pageSize })
+			.reportPersonResponsible(params)
 			.pipe(finalize(() => {
 				this.loading = false;
 				this.cdr.markForCheck();
@@ -49,11 +62,24 @@ export class PersonResponsibleReport implements OnInit, AfterViewInit {
 					this.totalElements = res.totalElements ?? 0;
 					this.pageSize = res.pageSize ?? pageSize;
 				},
-				error: () => {
+				error: (err) => {
+					this.logger.error(() => 'Failed to load person responsible report', err);
 					this.dataSource.data = [];
 					this.totalElements = 0;
 				}
 			});
+	}
+
+	protected toggleSort(field: PersonResponsibleReportSortFieldView) {
+		if (this.sortField !== field) {
+			this.sortField = field;
+			this.sortDirection = 'asc';
+		} else {
+			if (this.sortDirection === 'asc') this.sortDirection = 'desc';
+			else if (this.sortDirection === 'desc') { this.sortField = null; this.sortDirection = null; }
+			else this.sortDirection = 'asc';
+		}
+		this.loadPage(0, this.pageSize);
 	}
 
 	protected onPage(event: PageEvent) {

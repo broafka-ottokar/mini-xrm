@@ -12,6 +12,8 @@ paths:
                 - $ref: '#/components/parameters/partnerTagId'
                 - $ref: '#/components/parameters/page'
                 - $ref: '#/components/parameters/pageSize'
+                - $ref: '#/components/parameters/partnerVSortField'
+                - $ref: '#/components/parameters/sortDirection'
             summary: Retrieve a list of partners
             responses:
                 '200':
@@ -19,7 +21,7 @@ paths:
                     content:
                         application/json:
                             schema:
-                                $ref: '#/components/schemas/PartnerPageView'
+                                $ref: '#/components/schemas/PartnerVPageView'
                 '400':
                     $ref: '#/components/responses/BadRequest'
                 '500':
@@ -236,6 +238,8 @@ paths:
                 - $ref: '#/components/parameters/partnerId'
                 - $ref: '#/components/parameters/page'
                 - $ref: '#/components/parameters/pageSize'
+                - $ref: '#/components/parameters/activitySortField'
+                - $ref: '#/components/parameters/sortDirection'
             summary: Retrieve a list of activities by partner ID
             responses:
                 '200':
@@ -259,6 +263,8 @@ paths:
             parameters:
                 - $ref: '#/components/parameters/page'
                 - $ref: '#/components/parameters/pageSize'
+                - $ref: '#/components/parameters/personResponsibleReportSortField'
+                - $ref: '#/components/parameters/sortDirection'
             summary: Retrieve a report of people responsible for activities
             responses:
                 '200':
@@ -324,6 +330,31 @@ components:
                 minimum: 1
                 example: 20
             description: The number of items per page
+        partnerVSortField:
+            name: sortField
+            in: query
+            required: false
+            schema:
+                $ref: '#/components/schemas/PartnerVSortFieldView'
+        activitySortField:
+            name: sortField
+            in: query
+            required: false
+            schema:
+                $ref: '#/components/schemas/ActivitySortFieldView'
+        personResponsibleReportSortField:
+            name: sortField
+            in: query
+            required: false
+            schema:
+                $ref: '#/components/schemas/PersonResponsibleReportSortFieldView'
+        sortDirection:
+            name: sortDirection
+            in: query
+            required: false
+            schema:
+                $ref: '#/components/schemas/SortDirectionView'
+                
 
     responses:
         BadRequest:
@@ -360,7 +391,7 @@ components:
             description: No Content
 
     schemas:
-        PartnerPageView:
+        PartnerVPageView:
             allOf:
                 - $ref: '#/components/schemas/PageView'
                 - type: object
@@ -368,7 +399,7 @@ components:
                       content:
                           type: array
                           items:
-                              $ref: '#/components/schemas/PartnerView'
+                              $ref: '#/components/schemas/PartnerVView'
                   required:
                       - content
 
@@ -404,7 +435,42 @@ components:
                 - headquarters
                 - status
                 - tags
-                
+
+        PartnerVView:
+            type: object
+            properties:
+                id:
+                    $ref: '#/components/schemas/id'
+                name:
+                    type: string
+                    minLength: 0
+                    maxLength: 150
+                    example: "Awesome Partner"
+                taxNumber:
+                    type: string
+                    minLength: 0
+                    maxLength: 20
+                    example: "123456789"
+                headquarters:
+                    type: string
+                    minLength: 0
+                    maxLength: 150
+                status:
+                    type: string
+                    minLength: 0
+                    maxLength: 50
+                tags:
+                    type: array
+                    items:
+                        $ref: '#/components/schemas/PartnerTagView'
+            required:
+                - id
+                - name
+                - taxNumber
+                - headquarters
+                - status
+                - tags
+
         PartnerStatusView:
             type: string
             enum: [ACTIVE, INACTIVE]
@@ -555,7 +621,7 @@ components:
                     maxLength: 50
                 description:
                     type: string
-                    minLength: 1
+                    minLength: 0
                     maxLength: 100000
                     example: "Discussing potential collaboration opportunities."
                 durationMinutes:
@@ -634,3 +700,18 @@ components:
             maximum: 9223372036854775807
             example: 123456789
             
+        PartnerVSortFieldView:
+            type: string
+            enum: [name, taxNumber, headquarters, status]
+            
+        ActivitySortFieldView:
+            type: string
+            enum: [subject, type, durationMinutes, personResponsible, partner.name]
+
+        PersonResponsibleReportSortFieldView:
+            type: string
+            enum: [personResponsible, totalDurationMinutes, partnerCount]            
+
+        SortDirectionView:
+            type: string
+            enum: [asc, desc]

@@ -20,6 +20,10 @@ import { OpenApiHttpParams, QueryParamStyle } from '../query.params';
 import { ErrorResponseView } from '../model/errorResponseView';
 // @ts-ignore
 import { PersonResponsibleReportPageView } from '../model/personResponsibleReportPageView';
+// @ts-ignore
+import { PersonResponsibleReportSortFieldView } from '../model/personResponsibleReportSortFieldView';
+// @ts-ignore
+import { SortDirectionView } from '../model/sortDirectionView';
 
 // @ts-ignore
 import { BASE_PATH, COLLECTION_FORMATS }                     from '../variables';
@@ -32,6 +36,8 @@ export interface ReportPersonResponsibleRequestParams {
     page: number;
     /** The number of items per page */
     pageSize: number;
+    sortField?: PersonResponsibleReportSortFieldView;
+    sortDirection?: SortDirectionView;
 }
 
 
@@ -64,6 +70,8 @@ export class ReportService extends BaseService {
         if (pageSize === null || pageSize === undefined) {
             throw new Error('Required parameter pageSize was null or undefined when calling reportPersonResponsible.');
         }
+        const sortField = requestParameters?.sortField;
+        const sortDirection = requestParameters?.sortDirection;
 
         let localVarQueryParameters = new OpenApiHttpParams(this.encoder);
 
@@ -80,6 +88,24 @@ export class ReportService extends BaseService {
             localVarQueryParameters,
             'pageSize',
             <any>pageSize,
+            QueryParamStyle.Form,
+            true,
+        );
+
+
+        localVarQueryParameters = this.addToHttpParams(
+            localVarQueryParameters,
+            'sortField',
+            <any>sortField,
+            QueryParamStyle.Form,
+            true,
+        );
+
+
+        localVarQueryParameters = this.addToHttpParams(
+            localVarQueryParameters,
+            'sortDirection',
+            <any>sortDirection,
             QueryParamStyle.Form,
             true,
         );

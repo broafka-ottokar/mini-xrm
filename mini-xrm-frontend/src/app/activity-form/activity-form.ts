@@ -12,7 +12,8 @@ import { finalize } from 'rxjs/operators';
 import { ActivityService } from '../../../mini-xrm-client-angular/api/activity.service';
 import { ActivityView } from '../../../mini-xrm-client-angular/model/activityView';
 import { PartnerService } from '../../../mini-xrm-client-angular/api/partner.service';
-import { PartnerView } from '../../../mini-xrm-client-angular/model/partnerView';
+import { PartnerVView } from '../../../mini-xrm-client-angular/model/partnerVView';
+import { getLogger } from '../logging/logger';
 
 @Component({
 	selector: 'app-activity-form',
@@ -21,10 +22,11 @@ import { PartnerView } from '../../../mini-xrm-client-angular/model/partnerView'
 	styleUrl: './activity-form.scss',
 })
 export class ActivityForm implements OnInit {
+	private readonly logger = getLogger('component.ActivityForm');
 	protected form!: FormGroup;
 	protected loading = false;
 	protected editingId?: number;
-	protected partners: PartnerView[] = [];
+	protected partners: PartnerVView[] = [];
 
 	constructor(
 		private fb: FormBuilder,
@@ -50,7 +52,8 @@ export class ActivityForm implements OnInit {
 				this.partners = res.content ?? [];
 				this.cdr.markForCheck();
 			},
-			error: () => {
+                error: (err) => {
+                	this.logger.error(() => 'Failed to load partners for activity form', err);
 				this.partners = [];
 				this.cdr.markForCheck();
 			}
@@ -83,7 +86,8 @@ export class ActivityForm implements OnInit {
 						partnerId: a.partnerId,
 					});
 				},
-				error: () => {
+				error: (err) => {
+					this.logger.error(() => 'Failed to load activity', err);
 				}
 			});
 	}
@@ -101,12 +105,12 @@ export class ActivityForm implements OnInit {
 			this.activityService
 				.updateActivity({ activityId: this.editingId, createOrUpdateActivityRequestView: payload })
 				.pipe(finalize(() => { this.loading = false; this.cdr.markForCheck(); }))
-				.subscribe({ next: () => this.router.navigate(['/partner-details', payload.partnerId]), error: () => {} });
+				.subscribe({ next: () => this.router.navigate(['/partner-details', payload.partnerId]), error: (err) => { this.logger.error(() => 'Failed to update activity', err); } });
 		} else {
 			this.activityService
 				.createActivity({ createOrUpdateActivityRequestView: payload })
 				.pipe(finalize(() => { this.loading = false; this.cdr.markForCheck(); }))
-				.subscribe({ next: () => this.router.navigate(['/partner-details', payload.partnerId]), error: () => {} });
+				.subscribe({ next: () => this.router.navigate(['/partner-details', payload.partnerId]), error: (err) => { this.logger.error(() => 'Failed to create activity', err); } });
 		}
 	}
 

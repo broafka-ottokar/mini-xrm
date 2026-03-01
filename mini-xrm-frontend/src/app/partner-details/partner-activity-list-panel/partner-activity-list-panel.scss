@@ -27,6 +27,28 @@ table {
 	color: #c62828;
 }
 
+.action-btn.delete {
+	position: relative;
+	overflow: hidden;
+}
+
+.action-btn.delete .progress-fill {
+	position: absolute;
+	left: 0;
+	top: 0;
+	bottom: 0;
+	width: 0%;
+	background: rgba(198,40,40,0.12);
+	pointer-events: none;
+	transition: width 50ms linear;
+	z-index: 0;
+}
+
+.action-btn.delete .label {
+	position: relative;
+	z-index: 1;
+}
+
 .action-btn.modify {
 	color: #1565c0;
 }

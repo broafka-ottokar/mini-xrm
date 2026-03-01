@@ -1,8 +1,13 @@
 ## Futtatási útmutató
 
-  * `/mini-xrm-backend/development$ docker compose up`
-  * `/mini-xrm-backend$ ../gradlew bootRun --args='--spring.profiles.active=dev'`
-  * [http://localhost:8080/swagger-ui/index.html](http://localhost:8080/swagger-ui/index.html)
+  * Backend:
+    * `/mini-xrm-backend/development$ docker compose up`
+    * `/mini-xrm-backend$ ../gradlew bootRun --args='--spring.profiles.active=dev'`
+    * [http://localhost:8080/swagger-ui/index.html](http://localhost:8080/swagger-ui/index.html)
+  * Frontend:
+    * `/mini-xrm-frontend$ npm install`
+    * `/mini-xrm-frontend$ ng serve`
+    * [http://localhost:4200/](http://localhost:4200/)
 
 ## Rövid architektúra leírás
 
@@ -20,17 +25,24 @@
 ## 3–5 technológiai döntés indoklása
 
   1. Swagger leíróból (`/mini-xrm-backend/src/main/resources/static/openapi-v1.yaml`) történik a REST API osztályainak generálása, nem pedig Java kód alapú
-    * mert ebből lehetséges az Angularnak is REST API klienst generálni, nem csúszik el a kettő
+    * mert ebből lehetséges az Angularnak is REST API klienst generálni, nem csúszik el a backend és a frontend
   1. ilyen kis projektnél a Swagger által generált model osztályokat is lehetett volna DTO-nak használni (nem szép, de gyors és kevesebb a hibalehetőség)
   1. MapStruct által generált osztályokat érdemes lenne használni a mappeléshez, kérdés, hogy a csapatnak van-e ellenérzése (nekem is volt)
-  1. Postgres-ben az activity.duration_minutes lehetett volna INTERVAL típusú (ekkor elég lett volna duration-nek nevezni), de nem álltam neki kísérletezni a 3rd party libraryval
+  1. Postgres-ben az activity.duration_minutes lehetett volna INTERVAL típusú (ekkor elég lett volna duration-nek nevezni), de nem álltam neki kísérletezni a 3rd party library-vel
   
-## Furcsaságok, amikre rá kellene kérdezni
+## milyen kompromisszumokat hoztál időhiány miatt
 
-  1. a partner neve nem kötelező
-  1. a partnernek van "Active" státusza és "Aktív" minősítése 
-  1. a partner típusa érzésre felsorolt típus kellene legyen szabad szöveges helyett
-  1. a tevékenység üzleti szabályainál szerint a "Partner és felelős kötelező", de pl. a tárgy nem, pedig logikus volna
+ 1. az Angular frontendnél erősen támaszkodtam a Copilot agent-re
+   * mert néhány hónap kihagyás miatt kimentem a gyakorlatból
+   * ez eredményezett néhány furcsaságot, pl.:
+     * manuális change detection triggerelést a paginálásnál
+     * a Delete gomb long-press működése is lehetne átláthatóbb
+   * ezzel szemben a Java backend lényegében kézműves termék, ott leginkább csak Copilot kódkiegészítést használtam
+ 1. az _tevékenység_ szerkesztő formon a partner dropdown a paginált partner listázó REST endpointból táplálkozik
   
-  
-  
+## Furcsaságok, amikre rá kellene kérdezni éles fejesztésnél
+
+  1. a _partner_ _neve_ nem kötelező
+  1. a _partnernek_ van "Active" státusza és "Aktív" minősítése 
+  1. a _tevékenység_ _típusa_ érzésre felsorolt típus kellene legyen szabad szöveges helyett
+  1. a _tevékenység_ üzleti szabályai szerint a "Partner és felelős kötelező", de pl. a _tárgy_ nem, pedig logikus volna

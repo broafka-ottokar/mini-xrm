@@ -99,7 +99,7 @@ public class CreateOrUpdateActivityRequestView implements Serializable {
    * Get description
    * @return description
    */
-  @NotNull @Size(min = 1, max = 100000) 
+  @NotNull @Size(min = 0, max = 100000) 
   @JsonProperty("description")
   public String getDescription() {
     return description;

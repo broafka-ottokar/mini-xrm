@@ -2,14 +2,12 @@ package com.example.minixrm.backend.core.util.mapper;
 
 import java.util.List;
 
-import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Component;
 
 import com.example.minixrm.backend.core.domain.entity.Partner;
 import com.example.minixrm.backend.core.domain.entity.PartnerTag;
 import com.example.minixrm.backend.core.facade.dto.CreateOrUpdatePartnerDto;
 import com.example.minixrm.backend.core.facade.dto.PartnerDto;
-import com.example.minixrm.backend.core.facade.dto.PartnerPageDto;
 
 @Component
 public class PartnerDtoMapper {
@@ -44,17 +42,6 @@ public class PartnerDtoMapper {
 		entity.setStatus(partnerStatusDtoMapper.fromDto(dto.getStatus()));
 		entity.setPartnerTags(partnerTags);
 		return entity;
-	}
-
-	public PartnerPageDto toDto(Page<Partner> all) {
-		return new PartnerPageDto(
-				all.getTotalElements(),
-				all.getTotalPages(),
-				all.getPageable().getPageNumber(),
-				all.getPageable().getPageSize(),
-				all.getContent().stream().map(this::toDto).toList()
-		);
-		
 	}
 
 }

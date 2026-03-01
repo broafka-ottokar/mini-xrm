@@ -1,16 +1,20 @@
 package com.example.minixrm.backend.web.controller;
 
 import org.springframework.http.ResponseEntity;
+import org.springframework.lang.Nullable;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
 
 import com.example.minixrm.backend.core.facade.util.ApplicationException;
 import com.example.minixrm.backend.web.facade.PartnerViewFacade;
 import com.example.minixrm.backend.web.openapi.v1.api.PartnerApi;
 import com.example.minixrm.backend.web.openapi.v1.model.CreateOrUpdatePartnerRequestView;
-import com.example.minixrm.backend.web.openapi.v1.model.PartnerPageView;
+import com.example.minixrm.backend.web.openapi.v1.model.PartnerVPageView;
+import com.example.minixrm.backend.web.openapi.v1.model.PartnerVSortFieldView;
 import com.example.minixrm.backend.web.openapi.v1.model.PartnerView;
+import com.example.minixrm.backend.web.openapi.v1.model.SortDirectionView;
 
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.Max;
@@ -78,12 +82,14 @@ public class PartnerController implements PartnerApi {
 	}
 
 	@Override
-	public ResponseEntity<PartnerPageView> searchPartners(
-			@NotNull @Min(0) @Valid Integer page,
-			@NotNull @Min(1) @Valid Integer pageSize,
-			@Min(1) @Max(9223372036854775807L) @Valid Long partnerTagId
+	public ResponseEntity<PartnerVPageView> searchPartners(
+	        @NotNull @Min(value = 0)  @Valid @RequestParam(value = "page", required = true) Integer page,
+	        @NotNull @Min(value = 1)  @Valid @RequestParam(value = "pageSize", required = true) Integer pageSize,
+	        @Min(value = 1L) @Max(value = 9223372036854775807L)  @Valid @RequestParam(value = "partnerTagId", required = false) @Nullable Long partnerTagId,
+	        @Valid @RequestParam(value = "sortField", required = false) @Nullable PartnerVSortFieldView sortField,
+	        @Valid @RequestParam(value = "sortDirection", required = false) @Nullable SortDirectionView sortDirection
 	) {
-		PartnerPageView view = facade.searchPartners(page, pageSize, partnerTagId);
+		PartnerVPageView view = facade.searchPartners(page, pageSize, sortField, sortDirection, partnerTagId);
 		return ResponseEntity.ok(view);
 	}
 

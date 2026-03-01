@@ -40,15 +40,14 @@ dependencies {
 	implementation 'org.springframework.boot:spring-boot-starter-validation'
 	implementation 'org.springframework.boot:spring-boot-starter-aop'
 	implementation("org.springdoc:springdoc-openapi-starter-webmvc-ui:${springdocVersion}")
-	
+
+	implementation "org.springframework.retry:spring-retry"
+
 	implementation "org.liquibase:liquibase-core:${liquibaseVersion}"
 	
 	runtimeOnly "org.postgresql:postgresql:${postgresqlVersion}"
 
 	implementation("org.openapitools:jackson-databind-nullable:${jacksonNullableVersion}")
-	implementation "io.github.resilience4j:resilience4j-spring-boot3:${resilience4jVersion}"
-	implementation "io.github.resilience4j:resilience4j-retry:${resilience4jVersion}"
-	implementation "io.github.resilience4j:resilience4j-core:${resilience4jVersion}"
 
 	testImplementation "com.tngtech.archunit:archunit:${archUnitVersion}"
 	testImplementation "com.tngtech.archunit:archunit-junit5:${archUnitVersion}"
