@@ -21,4 +21,7 @@
         <sqlFile path="db/migration/4_create_views.sql" relativeToChangelogFile="false" splitStatements="true" stripComments="true" />
     </changeSet>
     
+    <changeSet id="5-create-indices" author="migration">
+        <sqlFile path="db/migration/5_create_indices.sql" relativeToChangelogFile="false" splitStatements="true" stripComments="true" />
+    </changeSet>    
 </databaseChangeLog>
