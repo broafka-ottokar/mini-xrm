@@ -4,7 +4,7 @@
 		<mat-progress-spinner mode="indeterminate"></mat-progress-spinner>
 	} @else {
 
-		<table mat-table [dataSource]="dataSource" class="mat-elevation-z8">
+			<table mat-table [dataSource]="dataSource()" class="mat-elevation-z8">
 
 			<ng-container matColumnDef="personResponsible">
 				<th mat-header-cell *matHeaderCellDef (click)="toggleSort('personResponsible')" style="cursor:pointer"> Person Responsible <span class="sort-indicator">{{ sortField() === 'personResponsible' ? (sortDirection() ==='asc' ? '▲' : '▼') : '' }}</span> </th>

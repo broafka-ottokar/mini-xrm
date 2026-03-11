@@ -2,7 +2,7 @@
 	@if (loading()) {
 		<mat-progress-spinner mode="indeterminate"></mat-progress-spinner>
 	} @else {
-		<table mat-table [dataSource]="dataSource" class="mat-elevation-z8">
+			<table mat-table [dataSource]="dataSource()" class="mat-elevation-z8">
 	
 			<ng-container matColumnDef="subject">
 				<th mat-header-cell *matHeaderCellDef (click)="toggleSort('subject')" style="cursor:pointer"> Subject <span class="sort-indicator">{{ sortField() === 'subject' ? (sortDirection() === 'asc' ? '▲' : '▼') : '' }}</span> </th>
@@ -36,7 +36,7 @@
 							(mouseleave)="endHoldDelete(element, $event)"
 							(touchend)="endHoldDelete(element, $event)"
 							(touchcancel)="endHoldDelete(element, $event)">
-							<span class="progress-fill" [style.width.%]="progressMap[element.id] || 0"></span>
+							<span class="progress-fill" [style.width.%]="progressMap()[element.id] || 0"></span>
 							<span class="label">Delete</span>
 						</button>
 					</span>

@@ -1,4 +1,4 @@
-import { Component, OnInit, ChangeDetectorRef, Input, OnChanges, SimpleChanges, AfterViewInit, ViewChild, signal, WritableSignal } from '@angular/core';
+import { Component, OnInit, Input, OnChanges, SimpleChanges, AfterViewInit, ViewChild, signal, WritableSignal } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { MatPaginator, PageEvent, MatPaginatorModule } from '@angular/material/paginator';
 import { MatTableDataSource } from '@angular/material/table';
@@ -26,7 +26,7 @@ export class PartnerActivityListPanel implements OnInit, OnChanges, AfterViewIni
 	@Input() partnerId!: number;
 
 	protected displayedColumns = ['subject', 'type', 'durationMinutes', 'personResponsible', 'actions'];
-	protected dataSource = new MatTableDataSource<ActivityView>([]);
+	protected dataSource: WritableSignal<MatTableDataSource<ActivityView>> = signal(new MatTableDataSource<ActivityView>([]));
 	protected loading: WritableSignal<boolean> = signal(false);
 	protected totalElements: WritableSignal<number> = signal(0);
 	protected pageSize: WritableSignal<number> = signal(10);
@@ -38,9 +38,9 @@ export class PartnerActivityListPanel implements OnInit, OnChanges, AfterViewIni
 
 	private readonly HOLD_MS = 1000;
 	private holdIntervals = new Map<number, any>();
-	protected progressMap: { [id: number]: number } = {};
+	protected progressMap: WritableSignal<{ [id: number]: number }> = signal({});
 
-	constructor(private activityService: ActivityService, private cdr: ChangeDetectorRef, private snackBar: MatSnackBar) { }
+	constructor(private activityService: ActivityService, private snackBar: MatSnackBar) { }
 
 	ngOnInit(): void {}
 
@@ -70,17 +70,16 @@ export class PartnerActivityListPanel implements OnInit, OnChanges, AfterViewIni
 			.listActivitiesByPartnerId(params)
 			.pipe(finalize(() => {
 				this.loading.set(false);
-				this.cdr.markForCheck();
 			}))
 			.subscribe({
 				next: (res) => {
-					this.dataSource.data = res.content ?? [];
+					this.dataSource.set(new MatTableDataSource<ActivityView>(res.content ?? []));
 					this.totalElements.set(res.totalElements ?? 0);
 					this.pageSize.set(res.pageSize ?? pageSize);
 				},
 				error: (err) => {
 					this.logger.error(() => 'Failed to load partner activities', err);
-					this.dataSource.data = [];
+					this.dataSource.set(new MatTableDataSource<ActivityView>([]));
 					this.totalElements.set(0);
 				}
 			});
@@ -126,19 +125,18 @@ export class PartnerActivityListPanel implements OnInit, OnChanges, AfterViewIni
 		if (this.holdIntervals.has(id)) {
 			return;
 		}
-		this.progressMap = { ...this.progressMap, [id]: 0 };
+			this.progressMap.update(m => ({ ...m, [id]: 0 }));
 		const start = Date.now();
 		const stepMs = 50;
 		const interval = setInterval(() => {
 			const elapsed = Date.now() - start;
 			const p = Math.min(100, Math.round((elapsed / this.HOLD_MS) * 100));
-			this.progressMap = { ...this.progressMap, [id]: p };
-			this.cdr.markForCheck();
+				this.progressMap.update(m => ({ ...m, [id]: p }));
 			if (p >= 100) {
 				clearInterval(interval);
 				this.holdIntervals.delete(id);
 				this.delete(element);
-				this.progressMap = { ...this.progressMap, [id]: 0 };
+				this.progressMap.update(m => ({ ...m, [id]: 0 }));
 			}
 		}, stepMs);
 		this.holdIntervals.set(id, interval);
@@ -152,8 +150,7 @@ export class PartnerActivityListPanel implements OnInit, OnChanges, AfterViewIni
 		}
 		clearInterval(interval);
 		this.holdIntervals.delete(id);
-		this.progressMap = { ...this.progressMap, [id]: 0 };
-		this.cdr.markForCheck();
+		this.progressMap.update(m => ({ ...m, [id]: 0 }));
 		this.snackBar.open(`Hold the Delete button for ${this.HOLD_MS/1000} second to confirm deletion.`, 'OK', { duration: 3000 });
 	}
 

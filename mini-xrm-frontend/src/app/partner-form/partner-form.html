@@ -29,7 +29,7 @@
 			<mat-form-field appearance="fill">
 				<mat-label>Tags</mat-label>
 				<mat-select formControlName="tagIds" multiple>
-					<mat-option *ngFor="let tag of tags" [value]="tag.id">{{ tag.name }}</mat-option>
+					<mat-option *ngFor="let tag of tags()" [value]="tag.id">{{ tag.name }}</mat-option>
 				</mat-select>
 			</mat-form-field>
 		

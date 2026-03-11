@@ -1,4 +1,4 @@
-import { Component, OnInit, AfterViewInit, ViewChild, ChangeDetectorRef, signal, WritableSignal } from '@angular/core';
+import { Component, OnInit, AfterViewInit, ViewChild, signal, WritableSignal } from '@angular/core';
 import { RouterLinkWithHref } from '@angular/router';
 import { CommonModule } from '@angular/common';
 import { MatTableModule } from '@angular/material/table';
@@ -44,7 +44,7 @@ export class PartnerList implements OnInit, AfterViewInit {
 	private holdIntervals = new Map<number, any>();
 	protected progressMap: WritableSignal<{ [id: number]: number }> = signal({});
 
-	constructor(private partnerService: PartnerService, private partnerTagService: PartnerTagService, private cdr: ChangeDetectorRef, private snackBar: MatSnackBar) { }
+	constructor(private partnerService: PartnerService, private partnerTagService: PartnerTagService, private snackBar: MatSnackBar) { }
 
 	ngOnInit(): void {
 		this.loadTags();
@@ -65,7 +65,6 @@ export class PartnerList implements OnInit, AfterViewInit {
 		.searchPartners(params)
 		.pipe(finalize(() => {
 		this.loading.set(false);
-		this.cdr.markForCheck();
 		}))
 		.subscribe({
 		next: (res) => {
@@ -117,9 +116,8 @@ export class PartnerList implements OnInit, AfterViewInit {
 		setTimeout(() => {
 		// defer UI mutations to the next macrotask to avoid
 		// ExpressionChangedAfterItHasBeenCheckedError
-		this.loadPage(this.pageIndex(), this.pageSize());
-		if (id != null) this.progressMap.update(m => { const copy = { ...m }; copy[id] = 0; return copy; });
-		this.cdr.markForCheck();
+				this.loadPage(this.pageIndex(), this.pageSize());
+				if (id != null) this.progressMap.update(m => { const copy = { ...m }; copy[id] = 0; return copy; });
 		}, 0);
 		this.snackBar.open('Partner deleted', 'OK', { duration: 3000 });
 		},
@@ -142,8 +140,7 @@ export class PartnerList implements OnInit, AfterViewInit {
 		const interval = setInterval(() => {
 		const elapsed = Date.now() - start;
 		const p = Math.min(100, Math.round((elapsed / this.HOLD_MS) * 100));
-		this.progressMap.update(m => { const copy = { ...m }; copy[id] = p; return copy; });
-		this.cdr.markForCheck();
+			this.progressMap.update(m => { const copy = { ...m }; copy[id] = p; return copy; });
 		if (p >= 100) {
 		clearInterval(interval);
 		this.holdIntervals.delete(id);
@@ -162,7 +159,6 @@ export class PartnerList implements OnInit, AfterViewInit {
 		clearInterval(interval);
 		this.holdIntervals.delete(id);
 		this.progressMap.update(m => { const copy = { ...m }; copy[id] = 0; return copy; });
-		this.cdr.markForCheck();
 		this.snackBar.open(`Hold the Delete button for ${this.HOLD_MS/1000} second to confirm deletion.`, 'OK', { duration: 3000 });
 	}
 

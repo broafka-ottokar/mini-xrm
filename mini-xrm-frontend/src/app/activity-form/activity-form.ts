@@ -1,4 +1,4 @@
-import { Component, OnInit, ChangeDetectorRef, signal, WritableSignal } from '@angular/core';
+import { Component, OnInit, signal, WritableSignal } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ReactiveFormsModule, FormBuilder, FormGroup, Validators, ValidatorFn, AbstractControl } from '@angular/forms';
 import { MatFormFieldModule } from '@angular/material/form-field';
@@ -28,7 +28,7 @@ export class ActivityForm implements OnInit {
 	protected loading: WritableSignal<boolean> = signal(false);
 	protected saving: WritableSignal<boolean> = signal(false);
 	protected editingId?: number;
-	protected partners: PartnerVView[] = [];
+	protected partners: WritableSignal<PartnerVView[]> = signal([]);
 
 	constructor(
 		private fb: FormBuilder,
@@ -36,7 +36,6 @@ export class ActivityForm implements OnInit {
 		private partnerService: PartnerService,
 		private route: ActivatedRoute,
 		private router: Router,
-		private cdr: ChangeDetectorRef,
 		private snackBar: MatSnackBar
 	) {}
 
@@ -52,14 +51,12 @@ export class ActivityForm implements OnInit {
 
 		this.partnerService.searchPartners({ page: 0, pageSize: 200 }).subscribe({
 			next: (res) => {
-				this.partners = res.content ?? [];
+				this.partners.set(res.content ?? []);
 				this.form.get('partnerId')?.updateValueAndValidity();
-				this.cdr.markForCheck();
 			},
 			error: (err) => {
 				this.logger.error(() => 'Failed to load partners for activity form', err);
-				this.partners = [];
-				this.cdr.markForCheck();
+				this.partners.set([]);
 				this.snackBar.open('Failed to load partners', 'Close', { duration: 5000 });
 			}
 		});
@@ -77,7 +74,6 @@ export class ActivityForm implements OnInit {
 			.loadActivity({ activityId: id })
 			.pipe(finalize(() => {
 				this.loading.set(false);
-				this.cdr.markForCheck();
 			}))
 			.subscribe({
 				next: (a: ActivityView) => {
@@ -102,7 +98,6 @@ export class ActivityForm implements OnInit {
 	protected handleActivityLoadError(err: any) {
 		this.logger.error(() => 'Failed to load activity', err);
 		this.loading.set(false);
-		this.cdr.markForCheck();
 		this.snackBar.open('Failed to load activity', 'Close', { duration: 5000 });
 	}
 
@@ -123,7 +118,6 @@ export class ActivityForm implements OnInit {
 				})
 					.pipe(finalize(() => {
 							this.saving.set(false);
-							this.cdr.markForCheck();
 						}))
 				.subscribe({
 					next: () => {
@@ -140,7 +134,6 @@ export class ActivityForm implements OnInit {
 				})
 					.pipe(finalize(() => {
 							this.saving.set(false);
-							this.cdr.markForCheck();
 						}))
 				.subscribe({
 					next: () => {
@@ -182,7 +175,7 @@ export class ActivityForm implements OnInit {
 					return null;
 				}
 				const pid = Number(id);
-				const p = this.partners.find(x => (x.id === pid));
+				const p = this.partners().find(x => (x.id === pid));
 				if (!p) {
 					return null;
 				}

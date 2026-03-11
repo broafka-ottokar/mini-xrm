@@ -1,4 +1,4 @@
-import { Component, OnInit, ChangeDetectorRef, signal, WritableSignal } from '@angular/core';
+import { Component, OnInit, signal, WritableSignal } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ReactiveFormsModule, FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { MatFormFieldModule } from '@angular/material/form-field';
@@ -28,7 +28,7 @@ export class PartnerForm implements OnInit {
 	loading: WritableSignal<boolean> = signal(false);
 	saving: WritableSignal<boolean> = signal(false);
 	partnerId?: number;
-	tags: Array<any> = [];
+	tags: WritableSignal<any[]> = signal([]);
 
 	constructor(
 		private partnerService: PartnerService,
@@ -36,7 +36,6 @@ export class PartnerForm implements OnInit {
 		private fb: FormBuilder,
 		private route: ActivatedRoute,
 		private router: Router,
-		private cdr: ChangeDetectorRef,
 		private snackBar: MatSnackBar
 	) {
 		this.form = this.fb.group({
@@ -61,8 +60,7 @@ export class PartnerForm implements OnInit {
 	private loadTags() {
 		this.partnerTagService.listPartnerTags().subscribe({
 			next: res => {
-				this.tags = (res && res.content) || [];
-				this.cdr.markForCheck();
+				this.tags.set((res && res.content) || []);
 			},
 			error: (err) => {
 				this.handlePartnerTagLoadError(err);
@@ -72,8 +70,7 @@ export class PartnerForm implements OnInit {
 
 	protected handlePartnerTagLoadError(err: any) {
 		this.logger.error(() => 'Failed to load partner tags', err);
-		this.tags = [];
-		this.cdr.markForCheck();
+		this.tags.set([]);
 		this.snackBar.open('Failed to load partner tags', 'OK', { duration: 5000 });
 	}
 
@@ -89,7 +86,6 @@ export class PartnerForm implements OnInit {
 					tagIds: (partner.tags || []).map(t => (t as any).id)
 				});
 				this.loading.set(false);
-				this.cdr.markForCheck();
 			},
 			error: (err) => {
 				this.handlePartnerLoadError(err);
@@ -100,7 +96,6 @@ export class PartnerForm implements OnInit {
 	protected handlePartnerLoadError(err: any) {
 		this.logger.error(() => 'Failed to load partner', err);
 		this.loading.set(false);
-		this.cdr.markForCheck();
 		this.snackBar.open('Failed to load partner', 'OK', { duration: 5000 });
 	}
 
@@ -144,7 +139,6 @@ export class PartnerForm implements OnInit {
 	handlePartnerSaveError(err: any) {
 		this.logger.error(() => 'Failed to save partner', err);
 		this.saving.set(false);
-		this.cdr.markForCheck();
 		this.snackBar.open('Failed to save partner', 'OK', { duration: 5000 });
 	}
 
